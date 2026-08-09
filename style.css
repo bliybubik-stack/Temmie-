@@ -55,11 +55,6 @@ img, svg, .icon {
   filter: grayscale(1);
 }
 
-.avatar {
-  border-radius: 0.5rem;
-  filter: grayscale(1);
-}
-
 .text-white {
   color: #f0f0f0;
 }
@@ -184,15 +179,6 @@ img, svg, .icon {
   border: 1px solid rgba(255,255,255,0.04);
   color: #f0f0f0;
   border-bottom-left-radius: 0.25rem;
-}
-
-.msg.bot::before {
-  content: '🐾';
-  position: absolute;
-  top: -12px;
-  left: 4px;
-  font-size: 12px;
-  opacity: 0.5;
 }
 
 .msg.bot::after {
