@@ -33,7 +33,7 @@
 
     <div class="glass p-3 mb-4 flex items-center gap-2">
       <i class="fas fa-key text-gray-500 text-xs"></i>
-      <input type="text" id="apiKeyInput" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" spellcheck="false" />
+      <input type="password" id="apiKeyInput" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" data-lpignore="true" data-form-type="other" />
       <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
     </div>
 
@@ -42,12 +42,72 @@
     </div>
 
     <div class="glass p-2 flex items-center gap-2">
-      <input type="text" id="userInput" placeholder="tYpE hOI..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 px-2" autocomplete="off" spellcheck="false" />
+      <input type="text" id="userInput" placeholder="tYpE hOI..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 px-2" autocomplete="off" data-lpignore="true" data-form-type="other" spellcheck="false" />
       <button id="sendBtn" class="glass w-10 h-10 flex items-center justify-center text-gray-300 hover:text-white transition">
         <i class="fas fa-arrow-right"></i>
       </button>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const userInput = document.getElementById('userInput');
+      
+      userInput.addEventListener('focus', function(e) {
+        this.setAttribute('autocomplete', 'off');
+        this.setAttribute('data-lpignore', 'true');
+        this.setAttribute('data-form-type', 'other');
+        this.removeAttribute('name');
+        this.removeAttribute('id');
+        setTimeout(() => {
+          this.setAttribute('id', 'userInput');
+        }, 10);
+      });
+
+      userInput.addEventListener('keydown', function(e) {
+        this.setAttribute('autocomplete', 'off');
+        this.setAttribute('data-lpignore', 'true');
+      });
+
+      document.querySelectorAll('input').forEach(function(input) {
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('data-lpignore', 'true');
+        input.setAttribute('data-form-type', 'other');
+        input.removeAttribute('name');
+      });
+
+      document.querySelector('form')?.remove();
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        input::-webkit-credentials-auto-fill-button,
+        input::-webkit-credentials-auto-fill-button:hover,
+        input::-webkit-credentials-auto-fill-button:active,
+        input::-webkit-credentials-auto-fill-button:focus {
+          display: none !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+          opacity: 0 !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+        
+        input[autocomplete="off"]::-webkit-credentials-auto-fill-button {
+          display: none !important;
+        }
+        
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px rgba(16, 16, 18, 0.55) inset !important;
+          -webkit-text-fill-color: #f0f0f0 !important;
+          transition: background-color 5000s ease-in-out 0s !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
 
   <script src="prompt.js"></script>
   <script src="behavior.js"></script>
