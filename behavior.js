@@ -6,6 +6,10 @@
   const moodImage = document.getElementById('moodImage');
   const apiInput = document.getElementById('apiKeyInput');
   const saveBtn = document.getElementById('saveKeyBtn');
+  const heartIcon = document.getElementById('heartIcon');
+  const energyIcon = document.getElementById('energyIcon');
+  const moodLabel = document.getElementById('moodLabel');
+  const temName = document.getElementById('temName');
 
   let messageCount = 0;
   let lastMessageTime = Date.now();
@@ -19,6 +23,11 @@
   let conversationHistory = [];
   let userTypingTimer = null;
   let botResponseTimer = null;
+  let temmieEnergy = 100;
+  let temmieHappiness = 100;
+  let temmieAnger = 0;
+  let temmieSadness = 0;
+  let temmieLove = 50;
 
   const moodImages = [
     'happy.png', 'thinking.png', 'angry.png', 'sad.png', 
@@ -30,20 +39,59 @@
     if (!imageName) return;
     moodImage.src = 'images/' + imageName;
     moodImage.alt = imageName.replace('.png', '');
-    moodImage.style.transition = 'all 0.3s ease';
+    moodImage.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    
+    const mood = imageName.replace('.png', '');
+    moodLabel.textContent = mood;
     
     gsap.to(moodImage, {
-      scale: 0.9,
+      scale: 0.8,
+      rotation: -5,
       duration: 0.15,
       ease: "power2.out",
       onComplete: function() {
         gsap.to(moodImage, {
           scale: 1,
-          duration: 0.2,
+          rotation: 0,
+          duration: 0.3,
           ease: "back.out(1.7)"
         });
       }
     });
+
+    if (mood === 'happy' || mood === 'love' || mood === 'laugh') {
+      gsap.to(heartIcon, {
+        scale: 1.2,
+        color: '#ff6b6b',
+        duration: 0.3,
+        ease: "power2.out",
+        onComplete: function() {
+          gsap.to(heartIcon, {
+            scale: 1,
+            color: '#a0a0a0',
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        }
+      });
+    }
+
+    if (mood === 'angry') {
+      gsap.to(energyIcon, {
+        rotation: 30,
+        color: '#ff6b6b',
+        duration: 0.2,
+        ease: "power2.out",
+        onComplete: function() {
+          gsap.to(energyIcon, {
+            rotation: 0,
+            color: '#a0a0a0',
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        }
+      });
+    }
   }
 
   function setStatus(text, mood) {
@@ -53,16 +101,136 @@
     }
     
     gsap.to(statusText, {
-      opacity: 0.7,
+      opacity: 0.6,
       duration: 0.1,
       onComplete: function() {
         gsap.to(statusText, {
           opacity: 1,
-          duration: 0.2,
+          duration: 0.25,
           ease: "power2.out"
         });
       }
     });
+  }
+
+  function updateMoodLabel(mood) {
+    moodLabel.textContent = mood || 'happy';
+  }
+
+  function updateTemmieStats(userMessage) {
+    const lower = userMessage.toLowerCase();
+    
+    if (lower.includes('love') || lower.includes('cute') || lower.includes('adorable') || lower.includes('sweet') || lower.includes('nice')) {
+      temmieLove = Math.min(100, temmieLove + 15);
+      temmieHappiness = Math.min(100, temmieHappiness + 10);
+      temmieAnger = Math.max(0, temmieAnger - 10);
+      temmieSadness = Math.max(0, temmieSadness - 10);
+    } else if (lower.includes('hate') || lower.includes('stupid') || lower.includes('dumb') || lower.includes('useless') || lower.includes('terrible') || lower.includes('mean') || lower.includes('rude')) {
+      temmieAnger = Math.min(100, temmieAnger + 20);
+      temmieSadness = Math.min(100, temmieSadness + 15);
+      temmieHappiness = Math.max(0, temmieHappiness - 15);
+      temmieLove = Math.max(0, temmieLove - 10);
+    } else if (lower.includes('lol') || lower.includes('haha') || lower.includes('funny') || lower.includes('joke')) {
+      temmieHappiness = Math.min(100, temmieHappiness + 10);
+      temmieAnger = Math.max(0, temmieAnger - 5);
+    } else if (lower.includes('sad') || lower.includes('cry') || lower.includes('depressed') || lower.includes('lonely')) {
+      temmieSadness = Math.min(100, temmieSadness + 10);
+      temmieHappiness = Math.max(0, temmieHappiness - 5);
+    } else if (lower.includes('scared') || lower.includes('afraid') || lower.includes('worried')) {
+      temmieHappiness = Math.max(0, temmieHappiness - 5);
+      temmieAnger = Math.min(100, temmieAnger + 5);
+    } else {
+      temmieHappiness = Math.min(100, temmieHappiness + 2);
+      temmieLove = Math.min(100, temmieLove + 1);
+    }
+
+    temmieEnergy = Math.max(0, Math.min(100, temmieEnergy + (Math.random() * 2 - 1)));
+
+    updateTemmieDisplay();
+  }
+
+  function updateTemmieDisplay() {
+    const avg = (temmieHappiness + temmieLove) / 2;
+    let mood = 'happy';
+    let status = 'tEm iS hApPy!!!';
+
+    if (temmieAnger > 70) {
+      mood = 'angry';
+      status = 'tEm aNgRy!!! >:(';
+    } else if (temmieSadness > 70) {
+      mood = 'sad';
+      status = 'tEm sAd... :(';
+    } else if (temmieLove > 80 && temmieHappiness > 70) {
+      mood = 'love';
+      status = 'tEm lOvE u!!! <3';
+    } else if (temmieHappiness > 80 && temmieAnger < 30) {
+      mood = 'laugh';
+      status = 'tEm hApPy!!! :D';
+    } else if (temmieEnergy < 20) {
+      mood = 'sleepy';
+      status = 'zZz... tEm tIrEd...';
+    } else if (temmieHappiness < 30 && temmieSadness > 50) {
+      mood = 'sad';
+      status = 'tEm sAd... u hUrT tEm...';
+    } else if (temmieAnger > 50 && temmieAnger < 70) {
+      mood = 'confused';
+      status = 'tEm cOnFuSeD... wHy u mEaN...';
+    } else if (temmieLove > 60 && temmieHappiness > 60) {
+      mood = 'love';
+      status = 'tEm lOvE u!!! <3';
+    } else if (temmieHappiness > 60) {
+      mood = 'happy';
+      status = 'tEm hApPy!!! :D';
+    }
+
+    setMood(mood + '.png');
+    updateMoodLabel(mood);
+    
+    if (statusText.textContent === 'tEm iS rEaDy...' || statusText.textContent.includes('tEm')) {
+      setStatus(status, mood + '.png');
+    }
+  }
+
+  function detectUserMood(message) {
+    const lower = message.toLowerCase();
+    
+    if (lower.includes('hate') || lower.includes('stupid') || lower.includes('dumb') || lower.includes('annoying') || lower.includes('useless') || lower.includes('terrible') || lower.includes('awful') || lower.includes('bad') || lower.includes('mean') || lower.includes('rude') || lower.includes('ugly') || lower.includes('dummy') || lower.includes('idiot')) {
+      return 'angry';
+    }
+    
+    if (lower.includes('love') || lower.includes('cute') || lower.includes('adorable') || lower.includes('sweet') || lower.includes('nice') || lower.includes('good') || lower.includes('great') || lower.includes('amazing') || lower.includes('awesome') || lower.includes('best') || lower.includes('cool') || lower.includes('happy')) {
+      return 'love';
+    }
+    
+    if (lower.includes('angry') || lower.includes('mad') || lower.includes('frustrated') || lower.includes('annoyed') || lower.includes('irritated') || lower.includes('rage') || lower.includes('grr') || lower.includes('>')) {
+      return 'angry';
+    }
+    
+    if (lower.includes('?') || lower.includes('what') || lower.includes('huh') || lower.includes('confused') || lower.includes('why') || lower.includes('how') || lower.includes('when') || lower.includes('where') || lower.includes('who')) {
+      return 'confused';
+    }
+    
+    if (lower.includes('lol') || lower.includes('haha') || lower.includes('funny') || lower.includes('joke') || lower.includes('xd') || lower.includes(':D') || lower.includes('hilarious')) {
+      return 'laugh';
+    }
+    
+    if (lower.includes('sad') || lower.includes('cry') || lower.includes('depressed') || lower.includes('lonely') || lower.includes('miss') || lower.includes(':(') || lower.includes('crying')) {
+      return 'sad';
+    }
+    
+    if (lower.includes('scared') || lower.includes('afraid') || lower.includes('frightened') || lower.includes('panic') || lower.includes('worried') || lower.includes('nervous')) {
+      return 'scared';
+    }
+    
+    if (lower.includes('sleep') || lower.includes('tired') || lower.includes('exhausted') || lower.includes('zzz') || lower.includes('nap') || lower.includes('bed')) {
+      return 'sleepy';
+    }
+    
+    if (lower.includes('bye') || lower.includes('goodbye') || lower.includes('see ya') || lower.includes('later') || lower.includes('farewell')) {
+      return 'wave';
+    }
+    
+    return 'happy';
   }
 
   function updateBehavior() {
@@ -74,6 +242,11 @@
       return;
     }
 
+    if (temmieEnergy < 20 && idleTime > 10) {
+      setStatus('zZz... tEm sLeEpY... zZz...', 'sleepy.png');
+      return;
+    }
+
     if (messageCount === 0 && idleTime > 20) {
       setStatus('tEm iS bOrEd... pLaY wItH tEm?', 'sleepy.png');
     } else if (messageCount === 0 && idleTime > 40) {
@@ -82,16 +255,45 @@
       setStatus('hOI!!! wAkE uP!!! tEm mIsS u!!!', 'happy.png');
       lastMessageTime = now;
     } else if (messageCount > 0 && messageCount < 3 && idleTime > 15) {
-      setStatus('tEm wAiT fOr MeSsAgE...', 'thinking.png');
+      if (temmieAnger > 50) {
+        setStatus('tEm sTiLl aNgRy...', 'angry.png');
+      } else if (temmieSadness > 50) {
+        setStatus('tEm sAd... u No TaLk 2 tEm...', 'sad.png');
+      } else {
+        setStatus('tEm wAiT fOr MeSsAgE...', 'thinking.png');
+      }
     } else if (messageCount > 2 && messageCount < 6 && idleTime > 20) {
-      setStatus('tEm sAd... u No TaLk 2 tEm...', 'sad.png');
+      if (temmieAnger > 60) {
+        setStatus('tEm aNgRy!!! u MaKe tEm MaD!!!', 'angry.png');
+      } else if (temmieSadness > 60) {
+        setStatus('tEm sAd... tEm cRy... :(', 'sad.png');
+      } else {
+        setStatus('tEm sAd... u No TaLk 2 tEm...', 'sad.png');
+      }
     } else if (messageCount > 5 && idleTime > 25) {
-      setStatus('tEm gOnA cRy... tEm lOnElY...', 'cry.png');
+      if (temmieLove > 70 && temmieHappiness > 60) {
+        setStatus('tEm lOvE u!!! wHeRe u Go???', 'love.png');
+      } else {
+        setStatus('tEm gOnA cRy... tEm lOnElY...', 'sad.png');
+      }
     } else if (messageCount > 8 && idleTime > 30) {
       setStatus('tEm tHiNk U fOrGoT tEm...', 'sad.png');
     } else if (idleTime > 10 && idleTime < 15) {
-      const randomMood = ['thinking.png', 'confused.png', 'happy.png'];
-      setStatus('tEm iS hErE...', randomMood[Math.floor(Math.random() * randomMood.length)]);
+      const randomMood = ['thinking', 'confused', 'happy'];
+      const mood = randomMood[Math.floor(Math.random() * randomMood.length)];
+      setStatus('tEm iS hErE...', mood + '.png');
+    }
+
+    if (temmieEnergy > 0) {
+      temmieEnergy = Math.max(0, temmieEnergy - 0.1);
+    }
+
+    if (temmieSadness > 0 && temmieHappiness < 50) {
+      temmieSadness = Math.max(0, temmieSadness - 0.05);
+    }
+
+    if (temmieAnger > 0 && temmieHappiness < 40) {
+      temmieAnger = Math.max(0, temmieAnger - 0.03);
     }
 
     if (idleTime > 5 && idleTime < 10 && Math.random() > 0.7) {
@@ -102,7 +304,9 @@
         'tEm wAnT tAlK!!!',
         'pLaY wItH tEm!!!'
       ];
-      setStatus(randomPhrases[Math.floor(Math.random() * randomPhrases.length)], 'happy.png');
+      if (temmieHappiness > 50) {
+        setStatus(randomPhrases[Math.floor(Math.random() * randomPhrases.length)], 'happy.png');
+      }
     }
   }
 
@@ -110,11 +314,30 @@
     if (isProcessing) return;
     if (document.hidden) return;
     
+    if (temmieAnger > 70) {
+      setMood('angry.png');
+      updateMoodLabel('angry');
+      return;
+    }
+    
+    if (temmieSadness > 70) {
+      setMood('sad.png');
+      updateMoodLabel('sad');
+      return;
+    }
+    
+    if (temmieLove > 80 && temmieHappiness > 70) {
+      setMood('love.png');
+      updateMoodLabel('love');
+      return;
+    }
+    
     currentMoodIndex = (currentMoodIndex + 1) % moodImages.length;
     const mood = moodImages[currentMoodIndex];
     
     if (Math.random() > 0.3) {
       setMood(mood);
+      updateMoodLabel(mood.replace('.png', ''));
     }
   }
 
@@ -143,9 +366,19 @@
     if (messageCount === 0) {
       setStatus('hOI!!! tEm rEaDy 2 pLaY!!!', 'happy.png');
     } else if (messageCount > 2 && messageCount < 5) {
-      setStatus('tEm hApPy 2 sEe U!!!', 'laugh.png');
+      if (temmieAnger > 50) {
+        setStatus('tEm sTiLl aNgRy...', 'angry.png');
+      } else if (temmieSadness > 50) {
+        setStatus('tEm sAd... u bAcK...', 'sad.png');
+      } else {
+        setStatus('tEm hApPy 2 sEe U!!!', 'laugh.png');
+      }
     } else if (messageCount > 5) {
-      setStatus('tEm bEsT fRiEnD!!!', 'love.png');
+      if (temmieLove > 70) {
+        setStatus('tEm lOvE u!!! mIsS u!!!', 'love.png');
+      } else {
+        setStatus('tEm bEsT fRiEnD!!!', 'love.png');
+      }
     }
   }
 
@@ -153,7 +386,13 @@
     if (isProcessing) return;
     setTimeout(function() {
       if (!document.activeElement || document.activeElement !== userInput) {
-        setStatus('tEm wAiT...', 'thinking.png');
+        if (temmieAnger > 60) {
+          setStatus('tEm aNgRy... u LeAvE...', 'angry.png');
+        } else if (temmieSadness > 60) {
+          setStatus('tEm sAd... u LeAvE tEm...', 'sad.png');
+        } else {
+          setStatus('tEm wAiT...', 'thinking.png');
+        }
       }
     }, 3000);
   }
@@ -199,7 +438,14 @@
   function removeTypingIndicator() {
     const indicator = document.getElementById('typingIndicator');
     if (indicator) {
-      indicator.remove();
+      gsap.to(indicator, {
+        opacity: 0,
+        duration: 0.2,
+        onComplete: function() {
+          indicator.remove();
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      });
     }
   }
 
@@ -212,128 +458,6 @@
     return 'normal';
   }
 
-  function getTemmieResponseStyle(energy) {
-    const styles = {
-      'hyper': {
-        exclamation: '!!!',
-        extraVowels: 3,
-        capsChance: 0.8
-      },
-      'excited': {
-        exclamation: '!!',
-        extraVowels: 2,
-        capsChance: 0.6
-      },
-      'happy': {
-        exclamation: '!',
-        extraVowels: 1,
-        capsChance: 0.4
-      },
-      'shy': {
-        exclamation: '...',
-        extraVowels: 0,
-        capsChance: 0.2
-      },
-      'normal': {
-        exclamation: '!',
-        extraVowels: 1,
-        capsChance: 0.5
-      }
-    };
-    return styles[energy] || styles.normal;
-  }
-
-  function addEmotionToText(text, energy) {
-    const style = getTemmieResponseStyle(energy);
-    let result = text;
-    
-    if (Math.random() < style.capsChance) {
-      const words = result.split(' ');
-      const randomIndex = Math.floor(Math.random() * words.length);
-      if (words[randomIndex]) {
-        const word = words[randomIndex];
-        let newWord = '';
-        for (let i = 0; i < word.length; i++) {
-          if (Math.random() > 0.5) {
-            newWord += word[i].toUpperCase();
-          } else {
-            newWord += word[i].toLowerCase();
-          }
-        }
-        words[randomIndex] = newWord;
-        result = words.join(' ');
-      }
-    }
-    
-    if (style.extraVowels > 0 && Math.random() > 0.5) {
-      const vowels = ['a', 'e', 'i', 'o', 'u'];
-      const words = result.split(' ');
-      const randomIndex = Math.floor(Math.random() * words.length);
-      if (words[randomIndex]) {
-        let word = words[randomIndex];
-        for (let i = 0; i < word.length; i++) {
-          if (vowels.includes(word[i].toLowerCase()) && Math.random() > 0.7) {
-            word = word.slice(0, i + 1) + word[i].repeat(style.extraVowels) + word.slice(i + 1);
-            break;
-          }
-        }
-        words[randomIndex] = word;
-        result = words.join(' ');
-      }
-    }
-    
-    if (!result.endsWith('!') && !result.endsWith('?') && !result.endsWith('...')) {
-      result += style.exclamation;
-    }
-    
-    return result;
-  }
-
-  function getTemmieGreeting() {
-    const greetings = [
-      'hOI!!!! tEm hErE!!!',
-      'hElLo!!! iM tEm!!!',
-      'hOI!!!! wUtS uP???',
-      'hEy!!!! tEm Is HeRe!!!',
-      'hOI!!!! tEm WaS wAiTiNg!!!',
-      'hElLo!!!! tEm MiSsEd U!!!'
-    ];
-    return greetings[Math.floor(Math.random() * greetings.length)];
-  }
-
-  function getTemmieFarewell() {
-    const farewells = [
-      'bOI!!!! tAkE cArE!!!',
-      'gOoDbYe!!!! tEm WiLl MiSs U!!!',
-      'bOI!!!! cOmE bAcK sOoN!!!',
-      'sEe Ya!!!! tEm LoVe U!!!',
-      'bOI!!!! tEm GoTtA gO!!!'
-    ];
-    return farewells[Math.floor(Math.random() * farewells.length)];
-  }
-
-  function getTemmieConfusion() {
-    const confusions = [
-      'wUt??? tEm No UnDeRsTaNd...',
-      'hUh??? tEm CoNfUsEd...',
-      'wHaT??? tEm DuMb...',
-      'oH??? tEm No GeT iT...',
-      'wUt??? tEm NeEd HeLp...'
-    ];
-    return confusions[Math.floor(Math.random() * confusions.length)];
-  }
-
-  function getTemmieExcitement() {
-    const excitements = [
-      'oH mY gOsH!!!! tEm ExCiTeD!!!!',
-      'wOw!!!! tEm HaPpY!!!!',
-      'yAy!!!! tEm LoVe DiS!!!!',
-      'aAaA!!!! tEm GoInG cRaZy!!!!',
-      'sQuEe!!!! tEm So HaPpY!!!!'
-    ];
-    return excitements[Math.floor(Math.random() * excitements.length)];
-  }
-
   window.addEventListener('load', function() {
     behaviorInterval = setInterval(updateBehavior, 5000);
     moodRotationInterval = setInterval(rotateMood, 8000);
@@ -342,19 +466,10 @@
     userInput.addEventListener('focus', handleUserFocus);
     userInput.addEventListener('blur', handleUserBlur);
     
-    const greeting = 'hOI!!!! iM tEm!!! tYpE sUmThIn... 💬';
-    const botDiv = document.createElement('div');
-    botDiv.className = 'msg bot';
-    chatContainer.appendChild(botDiv);
+    setStatus('tEm iS rEaDy...', 'happy.png');
+    updateMoodLabel('happy');
     
-    if (typeof typewriteMessage === 'function') {
-      typewriteMessage(botDiv, greeting, function() {
-        setStatus('⚫ tEm rEaDy', 'happy.png');
-      });
-    } else {
-      botDiv.textContent = greeting;
-      setStatus('⚫ tEm rEaDy', 'happy.png');
-    }
+    temName.textContent = 'tEm';
   });
 
   window.addEventListener('beforeunload', function() {
@@ -369,16 +484,21 @@
     trackMessage: trackMessage,
     getConversationStats: getConversationStats,
     getTemmieEnergy: getTemmieEnergy,
-    getTemmieResponseStyle: getTemmieResponseStyle,
-    addEmotionToText: addEmotionToText,
-    getTemmieGreeting: getTemmieGreeting,
-    getTemmieFarewell: getTemmieFarewell,
-    getTemmieConfusion: getTemmieConfusion,
-    getTemmieExcitement: getTemmieExcitement,
     showTypingIndicator: showTypingIndicator,
     removeTypingIndicator: removeTypingIndicator,
     setStatus: setStatus,
     setMood: setMood,
-    updateBehavior: updateBehavior
+    updateBehavior: updateBehavior,
+    detectUserMood: detectUserMood,
+    updateTemmieStats: updateTemmieStats,
+    getTemmieStats: function() {
+      return {
+        energy: temmieEnergy,
+        happiness: temmieHappiness,
+        anger: temmieAnger,
+        sadness: temmieSadness,
+        love: temmieLove
+      };
+    }
   };
 })();
