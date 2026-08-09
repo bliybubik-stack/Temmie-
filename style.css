@@ -539,3 +539,28 @@ img, svg, .icon {
 .scroll-indicator:hover {
   background: rgba(255,255,255,0.1);
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgba(16, 16, 18, 0.55) inset !important;
+  -webkit-text-fill-color: #f0f0f0 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-credentials-auto-fill-button:hover,
+input::-webkit-credentials-auto-fill-button:active,
+input::-webkit-credentials-auto-fill-button:focus {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+input[autocomplete="off"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
