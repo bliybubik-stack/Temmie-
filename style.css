@@ -47,6 +47,8 @@ body {
   display: flex;
   flex-direction: column;
   padding: 24px 20px 20px 20px;
+  position: relative;
+  overflow: hidden;
 }
 
 img, svg, .icon {
@@ -99,6 +101,11 @@ img, svg, .icon {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.04);
   padding: 4px;
+  transition: all 0.3s ease;
+}
+
+.status-frame:hover {
+  border-color: rgba(255,255,255,0.08);
 }
 
 .chat-wrapper {
@@ -108,6 +115,8 @@ img, svg, .icon {
   scrollbar-color: rgba(255,255,255,0.1) transparent;
   min-height: 0;
   position: relative;
+  border-radius: 0.5rem;
+  padding: 4px;
 }
 
 .chat-wrapper::-webkit-scrollbar {
@@ -123,11 +132,16 @@ img, svg, .icon {
   border-radius: 10px;
 }
 
+.chat-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
 #chatContainer {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 2px;
+  min-height: 100%;
 }
 
 .msg {
@@ -135,10 +149,12 @@ img, svg, .icon {
   padding: 10px 16px;
   border-radius: 0.5rem;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   word-break: break-word;
   animation: fadeIn 0.25s ease;
   backdrop-filter: blur(4px);
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 .msg.user {
@@ -146,6 +162,20 @@ img, svg, .icon {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.06);
   color: #f0f0f0;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.msg.user::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 0 0 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-left: 1px solid rgba(255,255,255,0.06);
 }
 
 .msg.bot {
@@ -153,23 +183,50 @@ img, svg, .icon {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.04);
   color: #f0f0f0;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.msg.bot::before {
+  content: '🐾';
+  position: absolute;
+  top: -12px;
+  left: 4px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.msg.bot::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: -4px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 0 0 0 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+
+.msg:last-child {
+  margin-bottom: 4px;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0.3;
-    transform: translateY(6px);
+    transform: translateY(8px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 .cursor-blink {
   display: inline-block;
   width: 2px;
-  height: 1em;
+  height: 1.1em;
   background: #f0f0f0;
   margin-left: 2px;
   vertical-align: text-bottom;
@@ -188,6 +245,7 @@ img, svg, .icon {
   color: #f0f0f0;
   font-size: 13px;
   padding: 4px 0;
+  width: 100%;
 }
 
 #apiKeyInput::placeholder {
@@ -201,6 +259,7 @@ img, svg, .icon {
   color: #f0f0f0;
   font-size: 14px;
   padding: 8px 0;
+  width: 100%;
 }
 
 #userInput::placeholder {
@@ -217,12 +276,14 @@ img, svg, .icon {
   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 #saveKeyBtn:hover {
   background: rgba(255,255,255,0.08);
   color: #f0f0f0;
   transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.12);
 }
 
 #saveKeyBtn:active {
@@ -241,12 +302,14 @@ img, svg, .icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 #sendBtn:hover {
   background: rgba(255,255,255,0.08);
   color: #f0f0f0;
   transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.12);
 }
 
 #sendBtn:active {
@@ -260,6 +323,8 @@ img, svg, .icon {
 
 #statusText {
   transition: all 0.3s ease;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 #moodImage {
@@ -316,7 +381,7 @@ img, svg, .icon {
 @keyframes messageSlide {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.97);
+    transform: translateY(12px) scale(0.95);
   }
   to {
     opacity: 1;
@@ -326,14 +391,20 @@ img, svg, .icon {
 
 .typing-indicator {
   display: inline-flex;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: 5px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 0.5rem;
+  align-self: flex-start;
+  min-width: 60px;
+  justify-content: center;
 }
 
 .typing-dot {
-  width: 6px;
-  height: 6px;
-  background: #666;
+  width: 7px;
+  height: 7px;
+  background: #888;
   border-radius: 50%;
   animation: typingBounce 1.4s ease-in-out infinite;
 }
@@ -349,10 +420,10 @@ img, svg, .icon {
 @keyframes typingBounce {
   0%, 60%, 100% {
     transform: translateY(0);
-    opacity: 0.4;
+    opacity: 0.3;
   }
   30% {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
     opacity: 1;
   }
 }
@@ -388,7 +459,7 @@ img, svg, .icon {
 
 @media (max-width: 480px) {
   .phone-glass {
-    padding: 20px 16px 16px 16px;
+    padding: 16px 12px 12px 12px;
     height: 100vh;
     max-height: 800px;
     border-radius: 1.5rem;
@@ -396,11 +467,31 @@ img, svg, .icon {
   
   .msg {
     font-size: 13px;
-    padding: 8px 14px;
+    padding: 8px 12px;
+    max-width: 92%;
   }
   
   #userInput {
     font-size: 13px;
+  }
+
+  .msg.bot::before {
+    display: none;
+  }
+
+  .msg.user::after {
+    display: none;
+  }
+
+  .msg.bot::after {
+    display: none;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .phone-glass {
+    height: 95vh;
+    max-height: 850px;
   }
 }
 
@@ -410,4 +501,55 @@ img, svg, .icon {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  
+  .msg {
+    animation: none !important;
+  }
+  
+  .typing-dot {
+    animation: none !important;
+  }
+}
+
+.tilt-card:hover .status-frame {
+  border-color: rgba(255,255,255,0.12);
+}
+
+.glass-deep .msg:last-child {
+  margin-bottom: 0;
+}
+
+#chatContainer:empty::after {
+  content: 'tEm iS wAiTiNg...';
+  color: #555;
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
+  display: block;
+  font-style: italic;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.scroll-indicator.visible {
+  opacity: 1;
+}
+
+.scroll-indicator:hover {
+  background: rgba(255,255,255,0.1);
 }
