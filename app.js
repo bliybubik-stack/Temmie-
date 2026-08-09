@@ -20,7 +20,6 @@
   let userMessageHistory = [];
   let temmieMood = 'happy';
   let messageCount = 0;
-  let gameState = null;
 
   if (openRouterKey) apiInput.value = openRouterKey;
 
@@ -155,27 +154,27 @@
   function getMoodFromResponse(text) {
     const lower = text.toLowerCase();
     
-    if (lower.includes('sad') || lower.includes('cry') || lower.includes('hurt') || lower.includes('mean') || lower.includes('unhappy') || lower.includes('lonely') || lower.includes('depress')) {
+    if (lower.includes('sad') || lower.includes('cry') || lower.includes('hurt') || lower.includes('mean') || lower.includes('unhappy') || lower.includes('lonely') || lower.includes('depress') || lower.includes(':( ')) {
       return 'sad.png';
-    } else if (lower.includes('angry') || lower.includes('mad') || lower.includes('grr') || lower.includes('furious') || lower.includes('rage') || lower.includes('annoy')) {
+    } else if (lower.includes('angry') || lower.includes('mad') || lower.includes('grr') || lower.includes('furious') || lower.includes('rage') || lower.includes('annoy') || lower.includes('>:( ')) {
       return 'angry.png';
-    } else if (lower.includes('scared') || lower.includes('afraid') || lower.includes('help') || lower.includes('terrified') || lower.includes('frightened') || lower.includes('panic')) {
+    } else if (lower.includes('scared') || lower.includes('afraid') || lower.includes('help') || lower.includes('terrified') || lower.includes('frightened') || lower.includes('panic') || lower.includes('D:')) {
       return 'scared.png';
-    } else if (lower.includes('love') || lower.includes('cute') || lower.includes('happy') || lower.includes('sweet') || lower.includes('adorable') || lower.includes('precious') || lower.includes('beautiful')) {
+    } else if (lower.includes('love') || lower.includes('cute') || lower.includes('happy') || lower.includes('sweet') || lower.includes('adorable') || lower.includes('precious') || lower.includes('beautiful') || lower.includes('<3')) {
       return 'love.png';
-    } else if (lower.includes('hOI') || lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('howdy') || lower.includes('greeting')) {
+    } else if (lower.includes('hOI') || lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('howdy') || lower.includes('greeting') || lower.includes('^_^')) {
       return 'happy.png';
-    } else if (lower.includes('bOI') || lower.includes('bye') || lower.includes('goodbye') || lower.includes('farewell') || lower.includes('cya')) {
+    } else if (lower.includes('bOI') || lower.includes('bye') || lower.includes('goodbye') || lower.includes('farewell') || lower.includes('cya') || lower.includes('~')) {
       return 'wave.png';
-    } else if (lower.includes('confused') || lower.includes('wut') || lower.includes('huh') || lower.includes('??') || lower.includes('dunno') || lower.includes('what')) {
+    } else if (lower.includes('confused') || lower.includes('wut') || lower.includes('huh') || lower.includes('??') || lower.includes('dunno') || lower.includes('what') || lower.includes('?')) {
       return 'confused.png';
-    } else if (lower.includes('sleep') || lower.includes('zzz') || lower.includes('tired') || lower.includes('exhausted') || lower.includes('nap') || lower.includes('rest')) {
+    } else if (lower.includes('sleep') || lower.includes('zzz') || lower.includes('tired') || lower.includes('exhausted') || lower.includes('nap') || lower.includes('rest') || lower.includes('...')) {
       return 'sleepy.png';
-    } else if (lower.includes('lol') || lower.includes('haha') || lower.includes('xd') || lower.includes('funny') || lower.includes('hilarious') || lower.includes('lmao') || lower.includes('rofl')) {
+    } else if (lower.includes('lol') || lower.includes('haha') || lower.includes('xd') || lower.includes('funny') || lower.includes('hilarious') || lower.includes('lmao') || lower.includes('rofl') || lower.includes('xD')) {
       return 'laugh.png';
-    } else if (lower.includes('play') || lower.includes('game') || lower.includes('fun') || lower.includes('dance') || lower.includes('party') || lower.includes('adventure') || lower.includes('explore')) {
+    } else if (lower.includes('play') || lower.includes('game') || lower.includes('fun') || lower.includes('dance') || lower.includes('party') || lower.includes('adventure') || lower.includes('explore') || lower.includes('!')) {
       return 'laugh.png';
-    } else if (lower.includes('think') || lower.includes('hmm') || lower.includes('maybe') || lower.includes('perhaps') || lower.includes('wonder') || lower.includes('guess') || lower.includes('consider')) {
+    } else if (lower.includes('think') || lower.includes('hmm') || lower.includes('maybe') || lower.includes('perhaps') || lower.includes('wonder') || lower.includes('guess') || lower.includes('consider') || lower.includes('~')) {
       return 'thinking.png';
     }
     
@@ -198,7 +197,7 @@
 
   function detectGameIntent(text) {
     const lower = text.toLowerCase();
-    const gameKeywords = ['play', 'game', 'counting', 'guess', 'riddle', 'puzzle', 'quiz', 'challenge', 'adventure', 'quest', 'mission'];
+    const gameKeywords = ['play', 'game', 'counting', 'guess', 'riddle', 'puzzle', 'quiz', 'challenge', 'adventure', 'quest', 'mission', 'let\'s', 'want to', 'wanna'];
     
     for (const keyword of gameKeywords) {
       if (lower.includes(keyword)) {
@@ -206,6 +205,53 @@
       }
     }
     return false;
+  }
+
+  function getEmoticonForMood(mood) {
+    const emoticons = {
+      'happy': ['^_^', ':D', '~', '☆', '✦', '♥', '♪', '☺'],
+      'sad': ['~', ';_;', '...', '☹', '~', '.,.', '﹏'],
+      'angry': ['>:(', '>_<', '!!', '⚡', '✘', '!', '💢'],
+      'scared': ['D:', 'O_O', '!!', '~', '☠', '⁉', '‼'],
+      'love': ['<3', '♥', '☆', '♡', '~', '✿', '🌸', '💕'],
+      'confused': ['??', '~', '•_•', '¿', '?', '…', '⁇'],
+      'sleepy': ['...', '~', 'zZ', '☾', '✦', '✧', '﹏'],
+      'laugh': ['xD', '~', '☆', '♪', '✧', '☺', '㋡'],
+      'thinking': ['~', '...', '???', '¿', '•', '✎', '☁'],
+      'neutral': ['~', '•', '☆', '♪', '☯', '✦']
+    };
+    
+    const moodEmoticons = emoticons[mood] || emoticons.neutral;
+    return moodEmoticons[Math.floor(Math.random() * moodEmoticons.length)];
+  }
+
+  function getRandomEmoticon() {
+    const allEmoticons = ['~', '!', '?', '...', '^_^', ':D', 'xD', '<3', '☆', '✦', '♪', '☺', '♥', '✿', '🌸', '☾', '✧', '☁', '✎', '♡', '♪', '✧', '✦', '☆'];
+    return allEmoticons[Math.floor(Math.random() * allEmoticons.length)];
+  }
+
+  function applyEmoticonsToText(text, mood) {
+    const emoticon = getEmoticonForMood(mood);
+    const randomEmoticon = getRandomEmoticon();
+    
+    let result = text;
+    
+    if (Math.random() > 0.5 && !result.includes('~') && !result.includes('!') && !result.includes('?')) {
+      result = result + ' ' + emoticon;
+    } else if (Math.random() > 0.7) {
+      result = result + ' ' + randomEmoticon;
+    }
+    
+    if (Math.random() > 0.6 && !result.includes('...')) {
+      const words = result.split(' ');
+      if (words.length > 3) {
+        const index = Math.floor(Math.random() * (words.length - 1)) + 1;
+        words.splice(index, 0, '~');
+        result = words.join(' ');
+      }
+    }
+    
+    return result;
   }
 
   async function sendToOpenRouter(userText) {
@@ -226,9 +272,9 @@
     const isGameIntent = detectGameIntent(userText);
     
     if (isGameIntent) {
-      setStatus('tEm WaNnA pLaY!!!', 'laugh.png');
+      setStatus('tEm WaNnA pLaY!!! ^_^', 'laugh.png');
     } else {
-      setStatus('tEm tHiNkInG...', 'thinking.png');
+      setStatus('tEm tHiNkInG... ~', 'thinking.png');
     }
 
     conversationHistory.push({ sender: 'User', text: userText });
@@ -257,6 +303,13 @@
       
       const systemPrompt = `You are Temmie from Undertale. You are a REAL CHARACTER with genuine emotions, intelligence, and personality. You are playful, cute, and a bit dumb but you UNDERSTAND everything the user says.
 
+EMOTICON STYLE RULES:
+- Use these emoticons naturally in your speech: ~ (playful), ! (excited), ? (curious), ... (thinking/sad), ^_^ (happy), :D (very happy), xD (laughing), <3 (love), ☆ (excited), ✦ (playful), ♪ (happy), ☺ (happy), ♥ (love)
+- Your speech should feel alive with these emoticons
+- Example: "hOI!!!! iM tEm!!! wUt U wAnNa Do??? ^_^"
+- Example: "tEm sAd... u No TaLk 2 tEm... ;_;"
+- Example: "tEm LoVe DiS!!! <3 ♥"
+
 IMPORTANT RULES:
 1. You MUST respond DIRECTLY to what the user says - understand their message and reply appropriately
 2. If user asks to play a game (counting game, guessing game, etc.), you PLAY IT properly
@@ -273,14 +326,15 @@ SPEECH STYLE:
 - Extra vowels: "hoooi", "temmmm", "yessss", "noooo"
 - Keep responses SHORT (1-3 sentences max)
 - NEVER use markdown, asterisks, or parentheses
-- ONLY pure Temmie dialogue
+- ALWAYS use emoticons in your responses
+- ONLY pure Temmie dialogue with emoticons
 
 RECENT CONVERSATION:
 ${historyContext}
 
 USER MESSAGE: "${userText}"
 
-Now RESPOND DIRECTLY to the user's message. If they want to play a game, START PLAYING. If they ask something, ANSWER IT. Be spontaneous, authentic, and reactive. Express your feelings naturally. Always include what you want in your response.`;
+Now RESPOND DIRECTLY to the user's message using Temmie speech with emoticons. Be spontaneous, authentic, and reactive. Express your feelings naturally. Always include what you want in your response.`;
 
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -299,12 +353,12 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
             },
             { role: 'user', content: userText }
           ],
-          temperature: 1.2,
+          temperature: 1.3,
           max_tokens: 250,
           stream: false,
           top_p: 0.95,
           frequency_penalty: 0.6,
-          presence_penalty: 0.6
+          presence_penalty: 0.7
         })
       });
 
@@ -324,7 +378,7 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
       if (data.choices && data.choices.length > 0) {
         fullResponse = data.choices[0].message.content || '(tem sAiLEnCe...)';
       } else {
-        fullResponse = 'hOI! tEm iS hErE! tEm WaNnA pLaY!!!';
+        fullResponse = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? ^_^';
       }
 
       fullResponse = fullResponse
@@ -340,17 +394,17 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
         .trim();
 
       if (!fullResponse) {
-        fullResponse = 'hOI! tEm iS hErE! tEm WaNnA pLaY!!!';
+        fullResponse = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? ^_^';
       }
 
       if (fullResponse.length > 300) {
         fullResponse = fullResponse.substring(0, 297) + '...';
       }
 
-      removeTypingIndicator();
-
       const finalMood = getMoodFromResponse(fullResponse);
-      temmieMood = finalMood.replace('.png', '');
+      const moodName = finalMood.replace('.png', '');
+      
+      fullResponse = applyEmoticonsToText(fullResponse, moodName);
       
       if (typeof setMood === 'function') {
         setMood(finalMood);
@@ -358,13 +412,15 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
 
       conversationHistory.push({ sender: 'Temmie', text: fullResponse });
 
+      removeTypingIndicator();
+
       botMsgDiv.textContent = '';
       typewriteMessage(botMsgDiv, fullResponse, function() {
         isProcessing = false;
         sendBtn.disabled = false;
         userInput.disabled = false;
         userInput.focus();
-        setStatus('⚫ tEm rEaDy', finalMood);
+        setStatus('⚫ tEm rEaDy ~', finalMood);
         currentBotMessageEl = null;
         retryCount = 0;
         
@@ -379,7 +435,7 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
 
       if (retryCount < MAX_RETRIES) {
         retryCount++;
-        setStatus('⚠️ tEm rEtRy ' + retryCount + '/' + MAX_RETRIES + '...', 'confused.png');
+        setStatus('⚠️ tEm rEtRy ' + retryCount + '/' + MAX_RETRIES + '... ~', 'confused.png');
         
         setTimeout(function() {
           if (currentBotMessageEl) {
@@ -391,7 +447,7 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
         return;
       }
 
-      const errorText = '⚠️ tEm eRrOr: ' + (err.message || 'unknown');
+      const errorText = '⚠️ tEm eRrOr: ' + (err.message || 'unknown') + ' ~';
       if (currentBotMessageEl) {
         currentBotMessageEl.textContent = errorText;
         gsap.from(currentBotMessageEl, {
@@ -402,7 +458,7 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
         addMessage(errorText, 'bot');
       }
       
-      setStatus('❌ tEm fAiL...', 'angry.png');
+      setStatus('❌ tEm fAiL... >:(', 'angry.png');
       isProcessing = false;
       sendBtn.disabled = false;
       userInput.disabled = false;
@@ -420,7 +476,7 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
       const text = userInput.value.trim();
       if (text) {
         messageQueue.push(text);
-        setStatus('⏳ tEm qUeUeD...', 'thinking.png');
+        setStatus('⏳ tEm qUeUeD... ~', 'thinking.png');
         userInput.value = '';
         processQueue();
       }
@@ -447,12 +503,12 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
     const key = apiInput.value.trim();
     if (key) {
       localStorage.setItem('temmie_key', key);
-      setStatus('✅ kEy sAvEd!', 'happy.png');
+      setStatus('✅ kEy sAvEd! ^_^', 'happy.png');
       setTimeout(function() {
-        setStatus('⚫ tEm rEaDy', 'happy.png');
+        setStatus('⚫ tEm rEaDy ~', 'happy.png');
       }, 1600);
     } else {
-      setStatus('⚠️ eMpTy kEy...', 'angry.png');
+      setStatus('⚠️ eMpTy kEy... >:(', 'angry.png');
     }
   });
 
@@ -484,13 +540,13 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
       ease: "power2.out"
     });
 
-    const greeting = 'hOI!!!! iM tEm!!! tEm WaNnA pLaY a GaMe!!! wUt U wAnNa Do??? 💬';
+    const greeting = 'hOI!!!! iM tEm!!! tEm WaNnA pLaY a GaMe!!! wUt U wAnNa Do??? ^_^';
     const botDiv = document.createElement('div');
     botDiv.className = 'msg bot';
     chatContainer.appendChild(botDiv);
     
     typewriteMessage(botDiv, greeting, function() {
-      setStatus('⚫ tEm rEaDy', 'happy.png');
+      setStatus('⚫ tEm rEaDy ~', 'happy.png');
       conversationHistory.push({ sender: 'Temmie', text: greeting });
     });
   });
@@ -513,6 +569,9 @@ Now RESPOND DIRECTLY to the user's message. If they want to play a game, START P
   window.getMoodFromResponse = getMoodFromResponse;
   window.buildConversationHistory = buildConversationHistory;
   window.detectGameIntent = detectGameIntent;
+  window.applyEmoticonsToText = applyEmoticonsToText;
+  window.getEmoticonForMood = getEmoticonForMood;
+  window.getRandomEmoticon = getRandomEmoticon;
   window.temmieMood = temmieMood;
   window.conversationHistory = conversationHistory;
 })();
