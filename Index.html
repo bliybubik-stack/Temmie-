@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>tEm tAlK - Temmie AI</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Local Files -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="screen">
+            
+            <!-- API Key Section -->
+            <div class="api-section">
+                <div class="key-row">
+                    <input type="password" id="apiKeyInput" placeholder="OpenRouter API Key" value="">
+                    <button id="saveKeyBtn"><i class="fas fa-save"></i> Save</button>
+                </div>
+            </div>
+            
+            <!-- Chat Frame (messages only) -->
+            <div id="chatContainer" class="chat-container">
+                <!-- Messages will be rendered here -->
+            </div>
+            
+            <!-- Status Bar with Temmie Images -->
+            <div class="status-bar" id="statusBar">
+                <div class="status-image-container">
+                    <img id="temmieStatusImg" src="assets/tem-happy.png" alt="Temmie status" class="status-image">
+                </div>
+                <div class="status-text" id="statusText">tEm iS rEaDy...</div>
+            </div>
+            
+            <!-- Merged Input + Send -->
+            <div class="input-wrapper">
+                <input type="text" id="userInput" placeholder="tYpE hOI tO tEm..." autocomplete="off">
+                <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- JavaScript Files -->
+    <script src="prompt.js"></script>
+    <script src="behavior.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
