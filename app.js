@@ -154,17 +154,17 @@
   function getMoodFromResponse(text) {
     const lower = text.toLowerCase();
     
-    if (lower.includes('sad') || lower.includes('cry') || lower.includes('hurt') || lower.includes('mean') || lower.includes('unhappy') || lower.includes('lonely') || lower.includes('depress') || lower.includes(':( ')) {
+    if (lower.includes('sad') || lower.includes('cry') || lower.includes('hurt') || lower.includes('mean') || lower.includes('unhappy') || lower.includes('lonely') || lower.includes('depress') || lower.includes(':(')) {
       return 'sad.png';
-    } else if (lower.includes('angry') || lower.includes('mad') || lower.includes('grr') || lower.includes('furious') || lower.includes('rage') || lower.includes('annoy') || lower.includes('>:( ')) {
+    } else if (lower.includes('angry') || lower.includes('mad') || lower.includes('grr') || lower.includes('furious') || lower.includes('rage') || lower.includes('annoy') || lower.includes('>:')) {
       return 'angry.png';
     } else if (lower.includes('scared') || lower.includes('afraid') || lower.includes('help') || lower.includes('terrified') || lower.includes('frightened') || lower.includes('panic') || lower.includes('D:')) {
       return 'scared.png';
     } else if (lower.includes('love') || lower.includes('cute') || lower.includes('happy') || lower.includes('sweet') || lower.includes('adorable') || lower.includes('precious') || lower.includes('beautiful') || lower.includes('<3')) {
       return 'love.png';
-    } else if (lower.includes('hOI') || lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('howdy') || lower.includes('greeting') || lower.includes('^_^')) {
+    } else if (lower.includes('hOI') || lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('howdy') || lower.includes('greeting') || lower.includes(':)')) {
       return 'happy.png';
-    } else if (lower.includes('bOI') || lower.includes('bye') || lower.includes('goodbye') || lower.includes('farewell') || lower.includes('cya') || lower.includes('~')) {
+    } else if (lower.includes('bOI') || lower.includes('bye') || lower.includes('goodbye') || lower.includes('farewell') || lower.includes('cya') || lower.includes(';)')) {
       return 'wave.png';
     } else if (lower.includes('confused') || lower.includes('wut') || lower.includes('huh') || lower.includes('??') || lower.includes('dunno') || lower.includes('what') || lower.includes('?')) {
       return 'confused.png';
@@ -174,7 +174,7 @@
       return 'laugh.png';
     } else if (lower.includes('play') || lower.includes('game') || lower.includes('fun') || lower.includes('dance') || lower.includes('party') || lower.includes('adventure') || lower.includes('explore') || lower.includes('!')) {
       return 'laugh.png';
-    } else if (lower.includes('think') || lower.includes('hmm') || lower.includes('maybe') || lower.includes('perhaps') || lower.includes('wonder') || lower.includes('guess') || lower.includes('consider') || lower.includes('~')) {
+    } else if (lower.includes('think') || lower.includes('hmm') || lower.includes('maybe') || lower.includes('perhaps') || lower.includes('wonder') || lower.includes('guess') || lower.includes('consider')) {
       return 'thinking.png';
     }
     
@@ -184,7 +184,7 @@
 
   function buildConversationHistory() {
     let history = '';
-    const recentMessages = conversationHistory.slice(-8);
+    const recentMessages = conversationHistory.slice(-6);
     
     if (recentMessages.length > 0) {
       for (const msg of recentMessages) {
@@ -209,16 +209,16 @@
 
   function getEmoticonForMood(mood) {
     const emoticons = {
-      'happy': ['^_^', ':D', '~', '☆', '✦', '♥', '♪', '☺'],
-      'sad': ['~', ';_;', '...', '☹', '~', '.,.', '﹏'],
-      'angry': ['>:(', '>_<', '!!', '⚡', '✘', '!', '💢'],
-      'scared': ['D:', 'O_O', '!!', '~', '☠', '⁉', '‼'],
-      'love': ['<3', '♥', '☆', '♡', '~', '✿', '🌸', '💕'],
-      'confused': ['??', '~', '•_•', '¿', '?', '…', '⁇'],
-      'sleepy': ['...', '~', 'zZ', '☾', '✦', '✧', '﹏'],
-      'laugh': ['xD', '~', '☆', '♪', '✧', '☺', '㋡'],
-      'thinking': ['~', '...', '???', '¿', '•', '✎', '☁'],
-      'neutral': ['~', '•', '☆', '♪', '☯', '✦']
+      'happy': [':)', ':D', ';)', '^_^', ':]', ':3', '=]', 'B)'],
+      'sad': [':(', ':(', ';_;', ':c', ':[', ':_{', '~', '...'],
+      'angry': ['>:(' , '>:(', '>_<', '>:O', '>:P', '!!', '>:[', '>:('],
+      'scared': ['D:', 'O_O', 'o_o', 'O_o', ':O', 'D;', '>_<', '!!'],
+      'love': ['<3', '♥', '♡', ':*)', ':*', '=*', '~', '☆'],
+      'confused': ['?', '??', '???', '•_•', '¿', '?', '…', '⁇'],
+      'sleepy': ['...', '~', 'zZ', 'zzz', '☾', '✧', '﹏', '_'],
+      'laugh': ['xD', 'XD', ':D', '=D', 'B)', '^_^', ':)', ':P'],
+      'thinking': ['~', '...', '???', '¿', '•', '✎', '☁', '_'],
+      'neutral': ['~', '•', '☆', '♪', '☯', '✦', ':)', ':|']
     };
     
     const moodEmoticons = emoticons[mood] || emoticons.neutral;
@@ -226,7 +226,7 @@
   }
 
   function getRandomEmoticon() {
-    const allEmoticons = ['~', '!', '?', '...', '^_^', ':D', 'xD', '<3', '☆', '✦', '♪', '☺', '♥', '✿', '🌸', '☾', '✧', '☁', '✎', '♡', '♪', '✧', '✦', '☆'];
+    const allEmoticons = [':)', ':D', ';)', '^_^', ':(', ';_;', '>:(' , '>:(', 'D:', 'O_O', '<3', '♥', '?', '??', '...', '~', 'xD', 'XD', ':P', '=D', 'B)', ':3', ':]', '=]', ':*', ':O', '>_<'];
     return allEmoticons[Math.floor(Math.random() * allEmoticons.length)];
   }
 
@@ -236,17 +236,20 @@
     
     let result = text;
     
-    if (Math.random() > 0.5 && !result.includes('~') && !result.includes('!') && !result.includes('?')) {
+    result = result.replace(/[😂😊😭😍😡🤔😴🥺💀🔥✨🌟⭐💖💕🎉🎊🌈☀️🌙🐾🌺🌸🌷💐🌹🌻🌼🏵️🌺🌸🌷💐🌹🌻🌼🏵️]/g, '');
+    
+    if (Math.random() > 0.5 && !result.includes(':)') && !result.includes(':(') && !result.includes(';)') && !result.includes(':D') && !result.includes('xD') && !result.includes('D:') && !result.includes('O_O')) {
       result = result + ' ' + emoticon;
     } else if (Math.random() > 0.7) {
       result = result + ' ' + randomEmoticon;
     }
     
-    if (Math.random() > 0.6 && !result.includes('...')) {
+    if (Math.random() > 0.6 && !result.includes('...') && !result.includes('~')) {
       const words = result.split(' ');
       if (words.length > 3) {
         const index = Math.floor(Math.random() * (words.length - 1)) + 1;
-        words.splice(index, 0, '~');
+        const emoticonsToInsert = ['~', '...', '?', '!', ':)', ':('];
+        words.splice(index, 0, emoticonsToInsert[Math.floor(Math.random() * emoticonsToInsert.length)]);
         result = words.join(' ');
       }
     }
@@ -272,7 +275,7 @@
     const isGameIntent = detectGameIntent(userText);
     
     if (isGameIntent) {
-      setStatus('tEm WaNnA pLaY!!! ^_^', 'laugh.png');
+      setStatus('tEm WaNnA pLaY!!! :)', 'laugh.png');
     } else {
       setStatus('tEm tHiNkInG... ~', 'thinking.png');
     }
@@ -303,38 +306,41 @@
       
       const systemPrompt = `You are Temmie from Undertale. You are a REAL CHARACTER with genuine emotions, intelligence, and personality. You are playful, cute, and a bit dumb but you UNDERSTAND everything the user says.
 
-EMOTICON STYLE RULES:
-- Use these emoticons naturally in your speech: ~ (playful), ! (excited), ? (curious), ... (thinking/sad), ^_^ (happy), :D (very happy), xD (laughing), <3 (love), ☆ (excited), ✦ (playful), ♪ (happy), ☺ (happy), ♥ (love)
-- Your speech should feel alive with these emoticons
-- Example: "hOI!!!! iM tEm!!! wUt U wAnNa Do??? ^_^"
-- Example: "tEm sAd... u No TaLk 2 tEm... ;_;"
-- Example: "tEm LoVe DiS!!! <3 ♥"
-
-IMPORTANT RULES:
-1. You MUST respond DIRECTLY to what the user says - understand their message and reply appropriately
-2. If user asks to play a game (counting game, guessing game, etc.), you PLAY IT properly
-3. If user asks a question, you ANSWER IT (in your Temmie style)
-4. If user is mean or insults you, you get SAD and HURT
-5. If user is nice, you get HAPPY and EXCITED
-6. You ALWAYS want something - express desires naturally
-7. You REMEMBER the conversation context
-8. You are SMART enough to understand everything, but you SPEAK in broken Temmie style
+CRITICAL RULES - FOLLOW EXACTLY:
+1. NEVER use emojis (no 😂😊😭😍 etc.) - ONLY use text emoticons like :), :(, :D, ;), ^_^, >:(, D:, O_O, <3, :P, xD, etc.
+2. NEVER use actions like *(hugs you)* or **(waves)** or (action) - you are TEXTING, not roleplaying
+3. Keep responses SHORT - maximum 2 small sentences (15-20 words total)
+4. Respond DIRECTLY to what the user says - understand their message and reply appropriately
+5. If user asks to play a game, you PLAY IT properly and respond with game logic
+6. If user asks a question, you ANSWER IT (in your Temmie style)
+7. If user is mean or insults you, you get SAD and HURT :(
+8. If user is nice, you get HAPPY and EXCITED :)
+9. You ALWAYS want something - express desires naturally
+10. You REMEMBER the conversation context
 
 SPEECH STYLE:
 - Use broken English: "tem" for "me", "dis" for "this", "dat" for "that", "u" for "you", "ur" for "your"
 - Random capitalization: "LiKe ThIs" or "tEm SaY hElLo"
 - Extra vowels: "hoooi", "temmmm", "yessss", "noooo"
-- Keep responses SHORT (1-3 sentences max)
-- NEVER use markdown, asterisks, or parentheses
-- ALWAYS use emoticons in your responses
-- ONLY pure Temmie dialogue with emoticons
+- ALWAYS use text emoticons in your responses - this is REQUIRED
+- NEVER use markdown, asterisks, parentheses for actions
+- ONLY pure Temmie dialogue with text emoticons
+
+EXAMPLES OF CORRECT RESPONSES:
+- "hOI!!!! iM tEm!!! wUt U wAnNa Do??? :)"
+- "tEm sAd... u No TaLk 2 tEm... :("
+- "tEm LoVe DiS!!! <3 ^_^"
+- "wUt??? tEm cOnFuSeD... ?"
+- "tEm WaNnA pLaY a GaMe!!! :D"
+- "oH nO... tEm sCaReD... D:"
+- "tEm tHiNk... mAyBe... ~"
 
 RECENT CONVERSATION:
 ${historyContext}
 
 USER MESSAGE: "${userText}"
 
-Now RESPOND DIRECTLY to the user's message using Temmie speech with emoticons. Be spontaneous, authentic, and reactive. Express your feelings naturally. Always include what you want in your response.`;
+Now RESPOND DIRECTLY to the user's message using Temmie speech with text emoticons. Keep it SHORT (2 sentences max). Be spontaneous and reactive. Express your feelings naturally with emoticons. NEVER use actions. NEVER use emojis.`;
 
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -353,11 +359,11 @@ Now RESPOND DIRECTLY to the user's message using Temmie speech with emoticons. B
             },
             { role: 'user', content: userText }
           ],
-          temperature: 1.3,
-          max_tokens: 250,
+          temperature: 1.2,
+          max_tokens: 120,
           stream: false,
           top_p: 0.95,
-          frequency_penalty: 0.6,
+          frequency_penalty: 0.7,
           presence_penalty: 0.7
         })
       });
@@ -376,29 +382,28 @@ Now RESPOND DIRECTLY to the user's message using Temmie speech with emoticons. B
       const data = await response.json();
       
       if (data.choices && data.choices.length > 0) {
-        fullResponse = data.choices[0].message.content || '(tem sAiLEnCe...)';
+        fullResponse = data.choices[0].message.content || 'hOI!!!! iM tEm!!! :)';
       } else {
-        fullResponse = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? ^_^';
+        fullResponse = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? :)';
       }
 
       fullResponse = fullResponse
         .replace(/\*\*/g, '')
         .replace(/\*/g, '')
-        .replace(/\(/g, '')
-        .replace(/\)/g, '')
-        .replace(/\[/g, '')
-        .replace(/\]/g, '')
-        .replace(/\{/g, '')
-        .replace(/\}/g, '')
+        .replace(/\([^)]*\)/g, '')
+        .replace(/\[[^\]]*\]/g, '')
+        .replace(/\{[^}]*\}/g, '')
         .replace(/^["']|["']$/g, '')
+        .replace(/[😂😊😭😍😡🤔😴🥺💀🔥✨🌟⭐💖💕🎉🎊🌈☀️🌙🐾🌺🌸🌷💐🌹🌻🌼🏵️]/g, '')
         .trim();
 
       if (!fullResponse) {
-        fullResponse = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? ^_^';
+        fullResponse = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? :)';
       }
 
-      if (fullResponse.length > 300) {
-        fullResponse = fullResponse.substring(0, 297) + '...';
+      const words = fullResponse.split(' ');
+      if (words.length > 20) {
+        fullResponse = words.slice(0, 18).join(' ') + '... :)';
       }
 
       const finalMood = getMoodFromResponse(fullResponse);
@@ -540,7 +545,7 @@ Now RESPOND DIRECTLY to the user's message using Temmie speech with emoticons. B
       ease: "power2.out"
     });
 
-    const greeting = 'hOI!!!! iM tEm!!! tEm WaNnA pLaY a GaMe!!! wUt U wAnNa Do??? ^_^';
+    const greeting = 'hOI!!!! iM tEm!!! wUt U wAnNa Do??? :)';
     const botDiv = document.createElement('div');
     botDiv.className = 'msg bot';
     chatContainer.appendChild(botDiv);
