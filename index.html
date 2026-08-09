@@ -14,7 +14,10 @@
 <body>
   <div class="w-full max-w-md phone-glass p-6 relative overflow-hidden" id="phoneContainer">
     <div class="flex justify-between items-center text-gray-400 text-sm font-semibold mb-4">
-      <span class="tracking-wide">tEm tAlK</span>
+      <span class="tracking-wide flex items-center gap-2">
+        <i class="fas fa-paw text-gray-500"></i>
+        tEm tAlK
+      </span>
       <div class="flex space-x-1.5 items-center">
         <div class="w-4 h-4 border border-gray-500 rounded-full flex items-center justify-center">
           <span class="block w-2 h-2 bg-gray-400 rounded-full"></span>
@@ -24,37 +27,69 @@
     </div>
 
     <div class="flex justify-between items-end mb-4">
-      <h1 class="text-2xl font-bold text-white tracking-tight">Temmie</h1>
-      <div class="w-10 h-10 bg-gray-600 border border-gray-500 avatar overflow-hidden">
-        <img src="https://i.pravatar.cc/100?img=12" alt="Avatar" class="w-full h-full object-cover grayscale">
+      <div>
+        <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+          <i class="fas fa-star text-xs text-gray-400"></i>
+          Temmie
+        </h1>
+        <p class="text-gray-500 text-xs flex items-center gap-1">
+          <i class="fas fa-circle text-[4px] text-green-400"></i>
+          online
+        </p>
+      </div>
+      <div class="w-12 h-12 glass avatar overflow-hidden flex items-center justify-center">
+        <img id="temAvatar" src="images/temmie-avatar.png" alt="Temmie" class="w-full h-full object-cover grayscale" />
       </div>
     </div>
 
-    <div class="glass-deep p-4 mb-4 flex items-center gap-3">
-      <div class="relative w-14 h-14 status-frame flex-shrink-0">
-        <img id="moodImage" src="images/happy.png" alt="Temmie mood" class="w-full h-full object-contain grayscale" />
-      </div>
-      <div class="flex-1">
-        <p class="text-white text-sm font-medium">tEm sTaTuS</p>
-        <p id="statusText" class="text-gray-400 text-xs">tEm iS rEaDy...</p>
-      </div>
-      <div class="w-8 h-8 glass flex items-center justify-center no-tilt">
-        <i class="fas fa-circle text-[6px] text-gray-500"></i>
+    <div class="glass-deep p-4 mb-4 flex items-center gap-3 tilt-card" id="statusCard">
+      <div class="tilt-content flex items-center gap-3 w-full">
+        <div class="relative w-16 h-16 status-frame flex-shrink-0">
+          <img id="moodImage" src="images/happy.png" alt="Temmie mood" class="w-full h-full object-contain grayscale" />
+          <div class="absolute -top-1 -right-1 w-4 h-4 glass rounded-full flex items-center justify-center">
+            <i class="fas fa-circle text-[4px] text-green-400"></i>
+          </div>
+        </div>
+        <div class="flex-1">
+          <p class="text-white text-sm font-medium flex items-center gap-2">
+            <span id="temName">tEm</span>
+            <span class="text-[8px] text-gray-500 bg-white/5 px-2 py-0.5 rounded-custom">v2.0</span>
+          </p>
+          <p id="statusText" class="text-gray-400 text-xs">tEm iS rEaDy...</p>
+          <div class="flex items-center gap-2 mt-1">
+            <div class="w-1.5 h-1.5 rounded-full bg-green-400/50"></div>
+            <span class="text-[8px] text-gray-500" id="moodLabel">happy</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <div class="w-6 h-6 glass flex items-center justify-center no-tilt">
+            <i class="fas fa-heart text-[8px] text-gray-400" id="heartIcon"></i>
+          </div>
+          <div class="w-6 h-6 glass flex items-center justify-center no-tilt">
+            <i class="fas fa-bolt text-[8px] text-gray-400" id="energyIcon"></i>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="glass p-3 mb-4 flex items-center gap-2">
       <i class="fas fa-key text-gray-500 text-xs"></i>
       <input type="password" id="apiKeyInput" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" />
-      <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
+      <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition flex items-center gap-1">
+        <i class="fas fa-save text-[10px]"></i> Save
+      </button>
     </div>
 
-    <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper">
+    <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper" id="chatWrapper">
       <div id="chatContainer" class="flex flex-col gap-3"></div>
+      <div id="chatScrollAnchor"></div>
     </div>
 
     <div class="glass p-2 flex items-center gap-2">
-      <input type="text" id="userInput" placeholder="tYpE hOI..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 px-2" autofocus />
+      <button id="emojiBtn" class="glass w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-300 transition text-xs">
+        <i class="fas fa-face-smile"></i>
+      </button>
+      <input type="text" id="userInput" placeholder="tYpE hOI..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 px-1" autofocus />
       <button id="sendBtn" class="glass w-10 h-10 flex items-center justify-center text-gray-300 hover:text-white transition">
         <i class="fas fa-arrow-right"></i>
       </button>
