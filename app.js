@@ -1,6 +1,5 @@
 (function() {
   const chatContainer = document.getElementById('chatContainer');
-  const chatWrapper = document.querySelector('.chat-wrapper');
   const userInput = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
   const apiInput = document.getElementById('apiKeyInput');
@@ -17,11 +16,7 @@
   let retryCount = 0;
   const MAX_RETRIES = 3;
   const RETRY_DELAY = 1000;
-  let messageCount = 0;
-  let lastScrollHeight = 0;
-  let autoScrollEnabled = true;
-  let userScrolledUp = false;
-  let scrollTimeout = null;
+  let userMessageHistory = [];
 
   if (openRouterKey) apiInput.value = openRouterKey;
 
@@ -32,116 +27,183 @@
     }
   }
 
-  function setMood(imageName) {
-    if (!imageName) return;
-    moodImage.src = 'images/' + imageName;
-    moodImage.alt = imageName.replace('.png', '');
-    moodImage.style.transition = 'all 0.3s ease';
-    
-    gsap.to(moodImage, {
-      scale: 0.9,
-      duration: 0.15,
-      ease: "power2.out",
-      onComplete: function() {
-        gsap.to(moodImage, {
-          scale: 1,
-          duration: 0.2,
-          ease: "back.out(1.7)"
-        });
-      }
-    });
-  }
-
-  function scrollToBottom(smooth = true) {
-    if (!autoScrollEnabled || userScrolledUp) return;
-    
-    const wrapper = chatWrapper;
-    const targetScroll = wrapper.scrollHeight - wrapper.clientHeight;
-    
-    if (smooth) {
-      gsap.to(wrapper, {
-        scrollTop: targetScroll,
-        duration: 0.4,
-        ease: "power2.out",
-        onComplete: function() {
-          lastScrollHeight = wrapper.scrollHeight;
-        }
-      });
-    } else {
-      wrapper.scrollTop = targetScroll;
-      lastScrollHeight = wrapper.scrollHeight;
-    }
-  }
-
-  function handleScroll() {
-    const wrapper = chatWrapper;
-    const isAtBottom = wrapper.scrollHeight - wrapper.scrollTop - wrapper.clientHeight < 10;
-    
-    if (isAtBottom) {
-      userScrolledUp = false;
-      autoScrollEnabled = true;
-    } else {
-      userScrolledUp = true;
-      autoScrollEnabled = false;
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(function() {
-        userScrolledUp = false;
-        autoScrollEnabled = true;
-        scrollToBottom(true);
-      }, 5000);
-    }
-  }
-
-  function addMessage(text, sender, mood = null) {
-    messageCount++;
-    
-    const container = document.createElement('div');
-    container.className = 'msg-container';
-    
+  function addMessage(text, sender) {
     const div = document.createElement('div');
     div.className = 'msg ' + sender + ' message-enter';
     div.textContent = text;
-    
-    if (sender === 'bot' && mood) {
-      div.classList.add('tem-' + mood);
-    }
-    
-    const time = document.createElement('span');
-    time.className = 'msg-time';
-    const now = new Date();
-    time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
-                      now.getMinutes().toString().padStart(2, '0');
-    div.appendChild(time);
-    
-    container.appendChild(div);
-    chatContainer.appendChild(container);
-    
-    setTimeout(function() {
-      scrollToBottom(true);
-    }, 50);
+    chatContainer.appendChild(div);
     
     gsap.from(div, {
       opacity: 0,
-      y: 12,
-      scale: 0.96,
+      y: 10,
+      scale: 0.95,
       duration: 0.3,
       ease: "power2.out"
+    });
+    
+    requestAnimationFrame(function() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     });
     
     return div;
   }
 
-  function addTypingIndicator() {
+  function typewriteMessage(element, fullText, callback) {
+    if (typewriterTimeline) {
+      typewriterTimeline.kill();
+      typewriterTimeline = null;
+    }
+
+    const oldCursor = element.querySelector('.cursor-blink');
+    if (oldCursor) oldCursor.remove();
+
+    element.textContent = '';
+    const textSpan = document.createElement('span');
+    textSpan.className = 'typewriter-text';
+    element.appendChild(textSpan);
+
+    const cursorSpan = document.createElement('span');
+    cursorSpan.className = 'cursor-blink';
+    element.appendChild(cursorSpan);
+
+    if (typeof gsap !== 'undefined' && gsap.registerPlugin) {
+      gsap.registerPlugin(TextPlugin);
+    }
+
+    const charsPerSec = 22;
+    const duration = Math.max(0.4, fullText.length / charsPerSec);
+
+    const tl = gsap.timeline({
+      onComplete: function() {
+        const c = element.querySelector('.cursor-blink');
+        if (c) c.remove();
+        if (callback) callback();
+        if (typeof setStatus === 'function') {
+          setStatus('tEm dOnE!', 'happy.png');
+        }
+        requestAnimationFrame(function() {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+      }
+    });
+
+    tl.call(function() {
+      cursorSpan.style.animation = 'none';
+      cursorSpan.style.opacity = '1';
+    }, [], 0);
+
+    tl.to(textSpan, {
+      duration: duration,
+      text: { value: fullText },
+      ease: 'none',
+      onUpdate: function() {
+        requestAnimationFrame(function() {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+      }
+    }, 0);
+
+    typewriterTimeline = tl;
+    return tl;
+  }
+
+  function detectUserMood(text) {
+    const lower = text.toLowerCase();
+    
+    const insults = ['stupid', 'dumb', 'idiot', 'moron', 'fool', 'useless', 'trash', 'garbage', 'hate', 'terrible', 'awful', 'bad', 'worst', 'suck', 'sucks', 'dummy'];
+    const meanWords = ['mean', 'rude', 'cruel', 'horrible', 'nasty', 'evil', 'devil', 'demon', 'monster', 'creep', 'weird', 'strange'];
+    const happyWords = ['love', 'cute', 'adorable', 'sweet', 'nice', 'kind', 'good', 'great', 'awesome', 'amazing', 'wonderful', 'fantastic', 'best', 'perfect', 'beautiful', 'pretty'];
+    const sadWords = ['sad', 'depressed', 'lonely', 'cry', 'crying', 'tears', 'miserable', 'gloomy', 'heartbroken'];
+    const angryWords = ['angry', 'mad', 'frustrated', 'annoyed', 'irritated', 'rage', 'furious', 'outraged', 'pissed'];
+    
+    for (const word of insults) {
+      if (lower.includes(word)) {
+        return 'insult';
+      }
+    }
+    
+    for (const word of meanWords) {
+      if (lower.includes(word)) {
+        return 'mean';
+      }
+    }
+    
+    for (const word of angryWords) {
+      if (lower.includes(word)) {
+        return 'angry';
+      }
+    }
+    
+    for (const word of sadWords) {
+      if (lower.includes(word)) {
+        return 'sad';
+      }
+    }
+    
+    for (const word of happyWords) {
+      if (lower.includes(word)) {
+        return 'happy';
+      }
+    }
+    
+    if (lower.includes('?') && !lower.includes('!')) {
+      return 'curious';
+    }
+    
+    if (lower.includes('!') && lower.length < 20) {
+      return 'excited';
+    }
+    
+    return 'neutral';
+  }
+
+  function getMoodReaction(userMood) {
+    const reactions = {
+      'insult': {
+        mood: 'sad.png',
+        status: 'tEm sAd... u HuRt tEm...'
+      },
+      'mean': {
+        mood: 'sad.png',
+        status: 'tEm cRy... y U sO mEaN...'
+      },
+      'angry': {
+        mood: 'scared.png',
+        status: 'tEm sCaReD... dOnT bE aNgRy...'
+      },
+      'sad': {
+        mood: 'sad.png',
+        status: 'tEm sAd 2... tEm cRy WiT u...'
+      },
+      'happy': {
+        mood: 'happy.png',
+        status: 'tEm hApPy!!! u MaKe tEm SmIlE!!!'
+      },
+      'curious': {
+        mood: 'confused.png',
+        status: 'tEm cOnFuSeD... wUt u MeAn???'
+      },
+      'excited': {
+        mood: 'laugh.png',
+        status: 'tEm eXcItEd 2!!! yAy!!!'
+      },
+      'neutral': {
+        mood: 'thinking.png',
+        status: 'tEm tHiNkInG...'
+      }
+    };
+    return reactions[userMood] || reactions.neutral;
+  }
+
+  function showTypingIndicator() {
     const indicator = document.createElement('div');
     indicator.className = 'msg bot typing-indicator';
     indicator.id = 'typingIndicator';
     indicator.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
     chatContainer.appendChild(indicator);
-    
-    setTimeout(function() {
-      scrollToBottom(true);
-    }, 50);
-    
+    requestAnimationFrame(function() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
     return indicator;
   }
 
@@ -156,58 +218,6 @@
         }
       });
     }
-  }
-
-  function typewriteMessage(element, fullText, callback) {
-    if (typewriterTimeline) {
-      typewriterTimeline.kill();
-      typewriterTimeline = null;
-    }
-
-    const oldCursor = element.querySelector('.cursor-blink');
-    if (oldCursor) oldCursor.remove();
-
-    const textSpan = document.createElement('span');
-    textSpan.className = 'typewriter-text';
-    element.prepend(textSpan);
-
-    const cursorSpan = document.createElement('span');
-    cursorSpan.className = 'cursor-blink';
-    element.prepend(cursorSpan);
-
-    if (typeof gsap !== 'undefined' && gsap.registerPlugin) {
-      gsap.registerPlugin(TextPlugin);
-    }
-
-    const charsPerSec = 22;
-    const duration = Math.max(0.4, fullText.length / charsPerSec);
-
-    const tl = gsap.timeline({
-      onComplete: function() {
-        const c = element.querySelector('.cursor-blink');
-        if (c) c.remove();
-        if (callback) callback();
-        setStatus('tEm dOnE!', 'happy.png');
-        scrollToBottom(true);
-      },
-      onUpdate: function() {
-        scrollToBottom(true);
-      }
-    });
-
-    tl.call(function() {
-      cursorSpan.style.animation = 'none';
-      cursorSpan.style.opacity = '1';
-    }, [], 0);
-
-    tl.to(textSpan, {
-      duration: duration,
-      text: { value: fullText },
-      ease: 'none'
-    }, 0);
-
-    typewriterTimeline = tl;
-    return tl;
   }
 
   function processQueue() {
@@ -229,55 +239,6 @@
     }
   }
 
-  function getEmotionalMood(text) {
-    const lower = text.toLowerCase();
-    
-    if (lower.includes('stupid') || lower.includes('dumb') || lower.includes('idiot') || 
-        lower.includes('hate') || lower.includes('ugly') || lower.includes('useless') ||
-        lower.includes('terrible') || lower.includes('awful') || lower.includes('horrible') ||
-        lower.includes('annoying') || lower.includes('dumbass') || lower.includes('moron')) {
-      return 'sad';
-    }
-    
-    if (lower.includes('love') || lower.includes('cute') || lower.includes('adorable') || 
-        lower.includes('sweet') || lower.includes('kind') || lower.includes('nice') ||
-        lower.includes('beautiful') || lower.includes('amazing') || lower.includes('wonderful') ||
-        lower.includes('great') || lower.includes('awesome')) {
-      return 'love';
-    }
-    
-    if (lower.includes('angry') || lower.includes('mad') || lower.includes('frustrated') || 
-        lower.includes('grr') || lower.includes('>:(') || lower.includes('rage')) {
-      return 'angry';
-    }
-    
-    if (lower.includes('?') && !lower.includes('!')) {
-      return 'confused';
-    }
-    
-    if (lower.includes('!!') || lower.includes('excited') || lower.includes('wow') || 
-        lower.includes('yay') || lower.includes('awesome') || lower.includes('amazing')) {
-      return 'excited';
-    }
-    
-    if (lower.includes('bye') || lower.includes('goodbye') || lower.includes('see you') || 
-        lower.includes('later') || lower.includes('farewell')) {
-      return 'wave';
-    }
-    
-    if (lower.includes('sleep') || lower.includes('tired') || lower.includes('zzz') || 
-        lower.includes('exhausted') || lower.includes('nap')) {
-      return 'sleepy';
-    }
-    
-    if (lower.includes('scared') || lower.includes('afraid') || lower.includes('frightened') || 
-        lower.includes('terrified') || lower.includes('horrified') || lower.includes('panic')) {
-      return 'scared';
-    }
-    
-    return 'happy';
-  }
-
   async function sendToOpenRouter(userText) {
     const key = apiInput.value.trim();
     if (!key) {
@@ -287,34 +248,24 @@
 
     localStorage.setItem('temmie_key', key);
 
+    userMessageHistory.push(userText);
+    if (userMessageHistory.length > 10) {
+      userMessageHistory.shift();
+    }
+
+    const userMood = detectUserMood(userText);
+    const moodReaction = getMoodReaction(userMood);
+    
+    setStatus(moodReaction.status, moodReaction.mood);
+
     isProcessing = true;
     sendBtn.disabled = true;
     userInput.disabled = true;
-    
-    const mood = getEmotionalMood(userText);
-    const moodImageMap = {
-      'sad': 'sad.png',
-      'love': 'love.png',
-      'angry': 'angry.png',
-      'confused': 'confused.png',
-      'excited': 'laugh.png',
-      'wave': 'wave.png',
-      'sleepy': 'sleepy.png',
-      'scared': 'scared.png',
-      'happy': 'happy.png'
-    };
-    
-    setStatus('⏳ tEm tHiNkInG...', moodImageMap[mood] || 'thinking.png');
 
-    const userMsgDiv = addMessage(userText, 'user');
-    
-    if (typeof behavior !== 'undefined' && behavior.trackMessage) {
-      behavior.trackMessage();
-    }
-
+    addMessage(userText, 'user');
     userInput.value = '';
 
-    const typingIndicator = addTypingIndicator();
+    showTypingIndicator();
 
     const botMsgDiv = document.createElement('div');
     botMsgDiv.className = 'msg bot';
@@ -324,9 +275,6 @@
     let fullResponse = '';
 
     try {
-      const prompt = typeof buildTemPrompt === 'function' ? buildTemPrompt(userText) : 
-        'You are Temmie from Undertale. You are VERY DUMB and EXTREMELY cute. Speak in broken English with typos, random caps, extra vowels. Use "tem" for "me", "dis" for "this", "dat" for "that", "u" for "you", "ur" for "your". Never use correct grammar. Keep replies short. NEVER use markdown, asterisks, or parentheses. Only reply as Temmie with pure dialogue. Respond to: "' + userText + '"';
-
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -340,12 +288,12 @@
           messages: [
             { 
               role: 'system', 
-              content: 'You are Temmie from Undertale. You are VERY DUMB and EXTREMELY cute. Speak in broken English with typos, random caps, extra vowels. Use "tem" for "me", "dis" for "this", "dat" for "that", "u" for "you", "ur" for "your". Never use correct grammar. Keep replies short (1-2 sentences). NEVER use markdown, asterisks, or parentheses. Only reply as Temmie with pure dialogue. If user is mean, respond with sadness. If user is nice, respond with love and happiness.' 
+              content: 'You are Temmie from Undertale. You are VERY DUMB and EXTREMELY cute. You MUST speak in broken English with typos, random capitalization, extra vowels. You ALWAYS use "tem" instead of "me", "dis" for "this", "dat" for "that", "u" for "you", "ur" for "your", "cuz" for "because", "wuz" for "was", "cud" for "could", "shud" for "should", "wud" for "would", "dunno" for "don\'t know", "gonna" for "going to", "wanna" for "want to". You ALWAYS type like this: "tEm sAd... u No TaLk 2 tEm..." or "hOI!!!! iM tEm!!! tYpE sUmThIn..." or "oH mY gOsH!!!! tEm ExCiTeD!!!!" You NEVER use correct grammar. You ALWAYS use random CAPS LOCK. You ALWAYS add extra vowels like "hoooi", "temmmm", "yesssss", "nooooo". You ALWAYS keep replies SHORT (1-2 sentences max). You NEVER use markdown, asterisks, parentheses, or actions. You ONLY reply as Temmie with pure dialogue. If the user is mean or insults you, you get sad and say things like "tEm sAd... u HuRt tEm..." or "y U sO mEaN... tEm cRy..." If the user is nice, you get happy and excited. You are a lovable, dumb, cute Temmie. Reply to: "' + userText + '"'
             },
             { role: 'user', content: userText }
           ],
           temperature: 1.3,
-          max_tokens: 200,
+          max_tokens: 180,
           stream: false,
           top_p: 0.95,
           frequency_penalty: 0.6,
@@ -381,10 +329,18 @@
         .replace(/\]/g, '')
         .replace(/\{/g, '')
         .replace(/\}/g, '')
+        .replace(/^["']|["']$/g, '')
         .trim();
 
       if (!fullResponse) {
-        fullResponse = 'hOI! tEm iS hErE!';
+        const fallbacks = [
+          'hOI! tEm iS hErE!',
+          'tEm dUnNo wUt 2 sAy...',
+          'oOoO! tEm LiKe DiS!',
+          'tEm tHiNk... tEm NoT tHiNk...',
+          'wUt??? tEm cOnFuSeD...'
+        ];
+        fullResponse = fallbacks[Math.floor(Math.random() * fallbacks.length)];
       }
 
       if (fullResponse.length > 200) {
@@ -393,33 +349,46 @@
 
       removeTypingIndicator();
 
-      const responseMood = typeof getMoodFromResponse === 'function' ? getMoodFromResponse(fullResponse) : 'happy.png';
+      let finalMood = 'happy.png';
+      const lowerResponse = fullResponse.toLowerCase();
+      
+      if (lowerResponse.includes('sad') || lowerResponse.includes('cry') || lowerResponse.includes('hurt') || lowerResponse.includes('mean')) {
+        finalMood = 'sad.png';
+      } else if (lowerResponse.includes('angry') || lowerResponse.includes('mad') || lowerResponse.includes('grr')) {
+        finalMood = 'angry.png';
+      } else if (lowerResponse.includes('scared') || lowerResponse.includes('afraid') || lowerResponse.includes('help')) {
+        finalMood = 'scared.png';
+      } else if (lowerResponse.includes('love') || lowerResponse.includes('cute') || lowerResponse.includes('happy')) {
+        finalMood = 'love.png';
+      } else if (lowerResponse.includes('hOI') || lowerResponse.includes('hello') || lowerResponse.includes('hi')) {
+        finalMood = 'happy.png';
+      } else if (lowerResponse.includes('bOI') || lowerResponse.includes('bye')) {
+        finalMood = 'wave.png';
+      } else if (lowerResponse.includes('confused') || lowerResponse.includes('wut') || lowerResponse.includes('huh')) {
+        finalMood = 'confused.png';
+      } else if (lowerResponse.includes('sleep') || lowerResponse.includes('zzz')) {
+        finalMood = 'sleepy.png';
+      } else if (lowerResponse.includes('lol') || lowerResponse.includes('haha') || lowerResponse.includes('xd')) {
+        finalMood = 'laugh.png';
+      }
+      
       if (typeof setMood === 'function') {
-        setMood(responseMood);
+        setMood(finalMood);
       }
 
-      const emotionalClass = getEmotionalMood(fullResponse);
-      botMsgDiv.classList.add('tem-' + emotionalClass);
+      if (typeof behavior !== 'undefined' && behavior.trackMessage) {
+        behavior.trackMessage();
+      }
 
-      const timeSpan = document.createElement('span');
-      timeSpan.className = 'msg-time';
-      const now = new Date();
-      timeSpan.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
-                            now.getMinutes().toString().padStart(2, '0');
-      
       botMsgDiv.textContent = '';
-      botMsgDiv.appendChild(timeSpan);
-      
       typewriteMessage(botMsgDiv, fullResponse, function() {
         isProcessing = false;
         sendBtn.disabled = false;
         userInput.disabled = false;
         userInput.focus();
-        setStatus('⚫ tEm rEaDy', 'happy.png');
+        setStatus('⚫ tEm rEaDy', finalMood);
         currentBotMessageEl = null;
         retryCount = 0;
-        
-        scrollToBottom(true);
         
         if (messageQueue.length > 0) {
           setTimeout(processQueue, 500);
@@ -483,10 +452,12 @@
     const text = userInput.value.trim();
     if (!text) return;
 
+    if (typeof behavior !== 'undefined' && behavior.trackMessage) {
+      behavior.trackMessage();
+    }
+
     sendToOpenRouter(text);
   }
-
-  chatWrapper.addEventListener('scroll', handleScroll);
 
   sendBtn.addEventListener('click', handleSend);
 
@@ -495,12 +466,6 @@
       e.preventDefault();
       if (e.repeat) return;
       handleSend();
-    }
-  });
-
-  userInput.addEventListener('input', function() {
-    if (typeof handleUserTyping === 'function') {
-      handleUserTyping();
     }
   });
 
@@ -550,30 +515,15 @@
     botDiv.className = 'msg bot';
     chatContainer.appendChild(botDiv);
     
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'msg-time';
-    const now = new Date();
-    timeSpan.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
-                          now.getMinutes().toString().padStart(2, '0');
-    botDiv.appendChild(timeSpan);
-    
     typewriteMessage(botDiv, greeting, function() {
       setStatus('⚫ tEm rEaDy', 'happy.png');
-      scrollToBottom(true);
     });
-    
-    setTimeout(function() {
-      scrollToBottom(true);
-    }, 100);
   });
 
   window.addEventListener('beforeunload', function() {
     if (typewriterTimeline) {
       typewriterTimeline.kill();
       typewriterTimeline = null;
-    }
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
     }
   });
 
@@ -582,10 +532,9 @@
   window.addMessage = addMessage;
   window.typewriteMessage = typewriteMessage;
   window.setStatus = setStatus;
-  window.setMood = setMood;
-  window.addTypingIndicator = addTypingIndicator;
+  window.showTypingIndicator = showTypingIndicator;
   window.removeTypingIndicator = removeTypingIndicator;
   window.processQueue = processQueue;
-  window.scrollToBottom = scrollToBottom;
-  window.getEmotionalMood = getEmotionalMood;
+  window.detectUserMood = detectUserMood;
+  window.getMoodReaction = getMoodReaction;
 })();
