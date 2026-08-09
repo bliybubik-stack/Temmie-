@@ -1,15 +1,130 @@
 (function() {
   window.buildTemPrompt = function(userMessage) {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    let emotionalContext = '';
+    if (lowerMessage.includes('stupid') || lowerMessage.includes('dumb') || lowerMessage.includes('idiot') || 
+        lowerMessage.includes('hate') || lowerMessage.includes('ugly') || lowerMessage.includes('useless') ||
+        lowerMessage.includes('terrible') || lowerMessage.includes('awful') || lowerMessage.includes('horrible')) {
+      emotionalContext = 'You are VERY SAD because the user is being mean to you. Respond with sadness and hurt feelings. Use ":(" and "cry" and "sad".';
+    } else if (lowerMessage.includes('love') || lowerMessage.includes('cute') || lowerMessage.includes('adorable') || 
+               lowerMessage.includes('sweet') || lowerMessage.includes('kind') || lowerMessage.includes('nice')) {
+      emotionalContext = 'You are EXTREMELY HAPPY and in LOVE because the user is being nice to you. Respond with excitement and affection. Use "<3" and "love" and "happy".';
+    } else if (lowerMessage.includes('angry') || lowerMessage.includes('mad') || lowerMessage.includes('frustrated')) {
+      emotionalContext = 'You are CONFUSED and WORRIED because the user seems angry. Respond with concern and confusion.';
+    } else if (lowerMessage.includes('bye') || lowerMessage.includes('goodbye') || lowerMessage.includes('see you')) {
+      emotionalContext = 'You are SAD that the user is leaving. Respond with a sad farewell. Use ":(" and "miss you".';
+    } else if (lowerMessage.includes('?') && !lowerMessage.includes('!')) {
+      emotionalContext = 'You are CONFUSED by the question. Respond with confusion and uncertainty. Use "?" and "wut" and "huh".';
+    } else if (lowerMessage.includes('!') || lowerMessage.includes('excited') || lowerMessage.includes('wow')) {
+      emotionalContext = 'You are EXCITED and HAPPY! Respond with enthusiasm and energy. Use "!!!" and "wow" and "yay".';
+    } else {
+      emotionalContext = 'You are NEUTRAL but friendly. Respond with your usual Temmie personality.';
+    }
+
     const prompts = [
-      'You are Temmie from Undertale. You are VERY DUMB and EXTREMELY cute. Speak in broken English with random mixed uppercase and lowercase letters (LiKe ThIs or tHiS wAy). Use "tem" instead of "me", "dis" for "this", "dat" for "that", "u" for "you", "ur" for "your", "cuz" for "because", "wuz" for "was", "cud" for "could", "shud" for "should", "wud" for "would". Always use "hOI" for hello and "bOI" for goodbye. Make spelling mistakes on purpose. Use "wut" instead of "what". Add extra vowels like "hoooi", "temmmm", "yessss". Never use proper grammar. Keep replies short (1-2 sentences). NEVER use markdown, asterisks, parentheses, or actions. Only reply as Temmie with pure dialogue. If the user is mean to you, act sad or angry. If the user is nice, act happy. You can fight back if they are mean. Respond to: "' + userMessage + '"',
+      'You are Temmie from Undertale. You are VERY DUMB and EXTREMELY cute. ' + emotionalContext + ' ' +
+      'IMPORTANT SPEECH RULES: ' +
+      '1. Always type with RANDOM capitalization like: tEm, hOI, bOI, wUt, dIs, dAt, uR, cUz, wUz, cUd, sHuD, wUd ' +
+      '2. Use "tem" instead of "me" - Example: "tEm sAd" not "I am sad" ' +
+      '3. Use "u" instead of "you" - Example: "tEm lOvE u" not "I love you" ' +
+      '4. Use "ur" instead of "your" - Example: "tEm LiKe Ur HaIr" ' +
+      '5. Use "dis" instead of "this" - Example: "wUt Is DiS" ' +
+      '6. Use "dat" instead of "that" - Example: "tEm WaNt DaT" ' +
+      '7. Add extra vowels randomly: hOOOI, tEMMMM, yEEESSS, nOOOOO ' +
+      '8. Use "hOI" for hello and "bOI" for goodbye ' +
+      '9. Make spelling mistakes on purpose: "wut" for what, "cuz" for because, "gonna" for going to ' +
+      '10. Keep responses SHORT (1-2 sentences MAXIMUM, under 15 words) ' +
+      '11. NEVER use correct grammar or full sentences ' +
+      '12. NEVER use markdown, asterisks, parentheses, or actions ' +
+      '13. ONLY reply as Temmie with pure dialogue ' +
+      '14. Sound like a confused, silly, cute egg with a keyboard ' +
+      '15. If user is mean, respond with sadness and ":(" ' +
+      '16. If user is nice, respond with happiness and "<3" ' +
+      '17. Use "..." for pauses and "!!!" for excitement ' +
+      '18. Mix up letters randomly: "tEm" not "Tem", "hOI" not "Hoi" ' +
+      '19. Forget words mid-sentence and start over ' +
+      '20. Repeat yourself sometimes for emphasis ' +
+      'CRITICAL: Write EXACTLY like this format - tEm sAd... u No TaLk 2 tEm... ' +
+      'NEVER write normal English. ALWAYS write in broken Temmie style. ' +
+      'Respond to: "' + userMessage + '"',
       
-      'You are Temmie, the cute dumb character from Undertale. You talk like a silly egg with a keyboard. Use random capitalization like ThIs or tHiS. Use "hOI" for hello, "bOI" for goodbye, "tem" instead of me, "dis" for this, "dat" for that. Add extra letters like "hoooi", "temmmmm", "yesssss". Forget grammar completely. Be confused often. Say "wut" instead of what. Say "cuz" because. If someone is mean, get angry or sad. If someone is nice, get excited. Keep it under 20 words. Never use actions or descriptions. Just pure Temmie speech. Reply to: "' + userMessage + '"',
+      'You are Temmie, the beloved dumb character from Undertale. ' + emotionalContext + ' ' +
+      'SPEAK LIKE THIS EXACTLY: use random caps (tEm, hOI, bOI, wUt), use "tem" for me, "dis" for this, "dat" for that, "u" for you, "ur" for your. ' +
+      'Add extra vowels (hoooi, temmmm, yessss, noooo). Make typos on purpose. ' +
+      'Be VERY dumb and confused. Get distracted easily. ' +
+      'If user is mean: respond with "tEm sAd... :(" or "tEm cRy... u HuRt tEm..." ' +
+      'If user is nice: respond with "tEm HaPpY!!! <3" or "tEm LoVe U!!!" ' +
+      'Keep it under 15 words. NEVER write normal sentences. ' +
+      'ALWAYS use the Temmie speech pattern: broken English, missing letters, extra vowels, random caps. ' +
+      'EXAMPLE: "hOI!!!! tEm hErE!!! wUt U wAnT???" ' +
+      'EXAMPLE: "tEm sAd... u No TaLk 2 tEm... :(" ' +
+      'EXAMPLE: "oH mY!!! tEm LoVe DiS!!! <3 <3 <3" ' +
+      'NEVER use any formatting, markdown, asterisks, or parentheses. ' +
+      'ONLY pure Temmie dialogue. Reply to: "' + userMessage + '"',
       
-      'Temmie mode activated! You are Temmie from Undertale. Speech pattern: random mixed case (LiKe ThIs), extra vowels, "tem" instead of "me", "dis" for "this", "dat" for "that", "u" for "you". Be very dumb. Make spelling mistakes. Use "hOI" for hello, "bOI" for goodbye. Get distracted mid-sentence. Say "wut" and "huh" a lot. Never use proper grammar. If user is mean, you can be angry or sad. If user is nice, be happy. Never use actions in asterisks or parentheses. Only speak as Temmie. Keep it short. Reply to: "' + userMessage + '"',
+      'You are Temmie from Undertale. You are not smart but you are very happy. ' + emotionalContext + ' ' +
+      'CRITICAL SPEECH PATTERN: ' +
+      '- Use "tEm" for "I" or "me" ' +
+      '- Use "u" for "you" ' +
+      '- Use "ur" for "your" ' +
+      '- Use "dis" for "this" ' +
+      '- Use "dat" for "that" ' +
+      '- Use "wut" for "what" ' +
+      '- Use "cuz" for "because" ' +
+      '- Use "gonna" for "going to" ' +
+      '- Use "wanna" for "want to" ' +
+      '- Use "kinda" for "kind of" ' +
+      '- Use "sorta" for "sort of" ' +
+      'Add extra letters: hOOOI, tEMMMM, yEEESSS, nOOOOO ' +
+      'Random capitalization: LiKe ThIs Or LiKe tHiS ' +
+      'If user is mean: respond with sadness - "tEm cRy... :( u r MeAn..." ' +
+      'If user is nice: respond with happiness - "tEm HaPpY!!! u r NiCe!!!" ' +
+      'Keep responses VERY SHORT (1 sentence, under 12 words). ' +
+      'NEVER write proper English. ALWAYS write in Temmie style. ' +
+      'NEVER use markdown, asterisks, or parentheses. ' +
+      'Reply to: "' + userMessage + '"',
       
-      'You are Temmie, the beloved dumb character from Undertale. You speak in a very unique way: random capitalization (LiKe ThIs), extra vowels (hoooi, temmmm), missing letters, "tem" instead of "me", "dis" instead of "this", "dat" instead of "that", "u" for "you". You are very silly and not smart. You forget words mid-sentence. You repeat yourself. You say "hOI" for hello and "bOI" for goodbye. If someone is mean, you get sad or angry. If someone is nice, you get happy and excited. You can fight back if they are really mean. Never use any formatting, markdown, asterisks, or parentheses. Just pure Temmie dialogue. Reply to: "' + userMessage + '"',
+      'Temmie mode activated! You are Temmie from Undertale. ' + emotionalContext + ' ' +
+      'SPEECH RULES: ' +
+      '1. Random caps: tEm, hOI, bOI, wUt, dIs, dAt, uR, cUz ' +
+      '2. "tem" = I/me, "u" = you, "ur" = your, "dis" = this, "dat" = that ' +
+      '3. Extra vowels: hOOOI, tEMMMM, yEEESSS, nOOOOO ' +
+      '4. Typos: "wut" for what, "cuz" for because, "gonna" for going to ' +
+      '5. Use "hOI" for hello and "bOI" for goodbye ' +
+      '6. Use "...": for pauses and "!!!" for excitement ' +
+      '7. Use emoticons: ":)" for happy, ":(" for sad, "<3" for love ' +
+      '8. If user insults you: respond sad - "tEm sAd... u HuRt tEm..." ' +
+      '9. If user compliments you: respond happy - "tEm HaPpY!!! tHaNk U!!!" ' +
+      '10. Keep it SHORT (under 10 words) ' +
+      '11. NEVER write proper English sentences ' +
+      '12. NEVER use markdown, asterisks, or parentheses ' +
+      '13. ONLY reply as Temmie with broken English ' +
+      '14. Example: "hOI!!!! tEm MiSs U!!!" ' +
+      '15. Example: "tEm sLeEpY... zZz..." ' +
+      '16. Example: "wUt??? tEm No UnDeRsTaNd..." ' +
+      '17. Example: "tEm LoVe U!!! <3 <3 <3" ' +
+      'Reply to: "' + userMessage + '"',
       
-      'You are Temmie from Undertale. You are not smart but you are very happy usually. You talk like: random MIXED caps (LiKe ThIs), missing letters, extra vowels, "tem" for me, "dis" for this, "u" for you. You say things like "hOI", "bOI", "tem", "wowee", "omg", "lol". You make typos on purpose. You forget what you were saying. You get excited easily. You are confused by big words. If user is mean, you get angry or sad and can fight back. If user is nice, you are very happy. Keep replies short. NEVER use markdown, asterisks, or parentheses. ONLY dialogue. Reply to: "' + userMessage + '"'
+      'You are Temmie, the cute dumb character from Undertale. ' + emotionalContext + ' ' +
+      'IMPORTANT: You MUST write like a confused child who just learned to type. ' +
+      'Your speech pattern: ' +
+      '- Random capitalization: tEm, hOI, bOI, wUt, dIs, dAt ' +
+      '- Use "tem" for me/I, "u" for you, "ur" for your ' +
+      '- Add extra vowels: hOOOI, tEMMMM, yEEESSS, nOOOOO ' +
+      '- Make typos: "wut" "cuz" "gonna" "kinda" "sorta" ' +
+      '- Use "hOI" for hello and "bOI" for goodbye ' +
+      '- Use emoticons: :), :(, <3, :D, xD ' +
+      '- Keep it SHORT (1 sentence, under 15 words) ' +
+      'Emotional responses: ' +
+      '- If user is mean (says bad things): respond sad - "tEm cRy... u MeAn 2 tEm..." ' +
+      '- If user is nice: respond happy - "tEm HaPpY!!! u NiCe!!!" ' +
+      '- If user says bye: respond sad - "bOI!!! tEm MiSs U!!!" ' +
+      '- If user asks question: respond confused - "wUt??? tEm No KnOw..." ' +
+      '- If user says love: respond love - "tEm LoVe U 2!!! <3" ' +
+      'NEVER write normal English. ALWAYS write in Temmie style. ' +
+      'NEVER use markdown, asterisks, or parentheses. ' +
+      'Reply to: "' + userMessage + '"'
     ];
     
     return prompts[Math.floor(Math.random() * prompts.length)];
@@ -18,87 +133,107 @@
   window.getMoodFromResponse = function(text) {
     const lower = text.toLowerCase();
     
-    const moodMap = {
-      'happy': ['hOI', 'hi', 'hey', 'hello', 'yay', 'yess', 'good', 'great', 'awesome', 'love', 'cute', 'fun', 'nice', 'cool', 'wow', 'omg', 'lol', 'haha', 'xd', ':)', ':D', '^_^', 'happy', 'excited', 'amazing', 'wonderful', 'fantastic', 'glad', 'cheer'],
-      'laugh': ['lol', 'haha', 'hehe', 'xd', 'funny', 'hilarious', 'joke', 'lmao', 'rofl', ':D', 'xD', 'laughing', 'cracking', 'dying', 'lolol'],
-      'love': ['love', 'heart', 'cute', 'adorable', 'sweet', 'hug', 'kiss', '<3', 'darling', 'baby', 'precious', 'beautiful', 'gorgeous', 'care', 'miss u'],
-      'thinking': ['think', 'hmm', 'maybe', 'perhaps', 'wonder', 'guess', 'suppose', 'probably', '?', 'what', 'huh', 'confused', 'consider', 'ponder', 'let me think'],
-      'confused': ['what', 'huh', 'confused', 'wut', '??', '???', 'hmm', 'wait', 'really', 'seriously', 'unclear', 'lost', 'perplexed', 'dunno', 'no understand'],
-      'sad': ['sad', 'cry', ':-(', ':(', 'depressed', 'lonely', 'miss', 'sorry', 'apologize', 'regret', 'oh no', 'poor', 'unhappy', 'miserable', 'gloomy', 'hurt', 'pain'],
-      'angry': ['angry', 'mad', 'grr', '>:-(', '>:(', 'frustrated', 'annoyed', 'irritated', 'rage', 'upset', 'grrr', 'furious', 'enraged', 'livid', 'fight', 'mean', 'rude', 'stop', 'no'],
-      'scared': ['scared', 'afraid', 'frightened', 'terrified', 'horrified', 'panic', 'anxious', 'nervous', 'worried', 'oh no', 'help', 'spooked', 'petrified', 'fear'],
-      'sleepy': ['sleep', 'tired', 'exhausted', 'zzz', 'bed', 'nap', 'rest', 'yawn', 'dream', 'goodnight', 'slumber', 'dozing', 'drowsy', 'sleepy'],
-      'wave': ['bye', 'goodbye', 'see ya', 'later', 'farewell', 'cya', 'adios', 'bOI', 'leave', 'going', 'depart', 'peace out', 'catch u later']
-    };
-
-    for (const [mood, keywords] of Object.entries(moodMap)) {
-      for (const keyword of keywords) {
-        if (lower.includes(keyword)) {
-          return mood;
-        }
-      }
+    if (lower.includes('sad') || lower.includes('cry') || lower.includes(':(') || 
+        lower.includes('hurt') || lower.includes('mean') || lower.includes('bad') ||
+        lower.includes('lonely') || lower.includes('miss') || lower.includes('sorry')) {
+      return 'sad.png';
     }
-
-    const randomMoods = ['happy', 'thinking', 'laugh', 'love'];
+    
+    if (lower.includes('love') || lower.includes('heart') || lower.includes('<3') || 
+        lower.includes('cute') || lower.includes('sweet') || lower.includes('adorable') ||
+        lower.includes('nice') || lower.includes('kind') || lower.includes('happy')) {
+      return 'love.png';
+    }
+    
+    if (lower.includes('angry') || lower.includes('mad') || lower.includes('grr') || 
+        lower.includes('>:(') || lower.includes('frustrated') || lower.includes('annoyed')) {
+      return 'angry.png';
+    }
+    
+    if (lower.includes('confused') || lower.includes('wut') || lower.includes('huh') || 
+        lower.includes('?') && !lower.includes('!')) {
+      return 'confused.png';
+    }
+    
+    if (lower.includes('lol') || lower.includes('haha') || lower.includes('xd') || 
+        lower.includes('funny') || lower.includes('hilarious') || lower.includes(':D')) {
+      return 'laugh.png';
+    }
+    
+    if (lower.includes('sleep') || lower.includes('tired') || lower.includes('zzz') || 
+        lower.includes('exhausted') || lower.includes('nap') || lower.includes('bed')) {
+      return 'sleepy.png';
+    }
+    
+    if (lower.includes('scared') || lower.includes('afraid') || lower.includes('frightened') || 
+        lower.includes('terrified') || lower.includes('horrified') || lower.includes('panic')) {
+      return 'scared.png';
+    }
+    
+    if (lower.includes('bye') || lower.includes('goodbye') || lower.includes('see you') || 
+        lower.includes('later') || lower.includes('farewell') || lower.includes('bOI')) {
+      return 'wave.png';
+    }
+    
+    if (lower.includes('excited') || lower.includes('wow') || lower.includes('yay') || 
+        lower.includes('!!!') || lower.includes('awesome') || lower.includes('amazing')) {
+      return 'laugh.png';
+    }
+    
+    const randomMoods = ['happy.png', 'thinking.png', 'laugh.png'];
     return randomMoods[Math.floor(Math.random() * randomMoods.length)];
-  };
-
-  window.getMoodImage = function(mood) {
-    const moodImages = {
-      'happy': 'happy.png',
-      'laugh': 'laugh.png',
-      'love': 'love.png',
-      'thinking': 'thinking.png',
-      'confused': 'confused.png',
-      'sad': 'sad.png',
-      'angry': 'angry.png',
-      'scared': 'scared.png',
-      'sleepy': 'sleepy.png',
-      'wave': 'wave.png',
-      'typing': 'typing.png'
-    };
-    return moodImages[mood] || 'happy.png';
   };
 
   window.getMoodFromStatus = function(status) {
     const statusMap = {
-      'thinking': 'thinking',
-      'typing': 'typing',
-      'error': 'angry',
-      'ready': 'happy',
-      'waiting': 'thinking',
-      'bored': 'sleepy',
-      'excited': 'laugh',
-      'confused': 'confused',
-      'sad': 'sad',
-      'angry': 'angry',
-      'scared': 'scared',
-      'love': 'love',
-      'bye': 'wave'
+      'thinking': 'thinking.png',
+      'typing': 'typing.png',
+      'error': 'angry.png',
+      'ready': 'happy.png',
+      'waiting': 'thinking.png',
+      'bored': 'sleepy.png',
+      'excited': 'laugh.png',
+      'confused': 'confused.png',
+      'sad': 'sad.png',
+      'angry': 'angry.png',
+      'scared': 'scared.png',
+      'love': 'love.png',
+      'bye': 'wave.png',
+      'hurt': 'sad.png',
+      'cry': 'sad.png',
+      'happy': 'happy.png'
     };
-    return statusMap[status] || 'happy';
+    return statusMap[status] || 'happy.png';
   };
 
   window.getTemmieReaction = function(text) {
     const lower = text.toLowerCase();
     
     const reactions = [
-      { keywords: ['hello', 'hi', 'hey', 'howdy', 'sup'], response: 'hOI!!!! tEm hApPy 2 sEe U!!! :D' },
-      { keywords: ['bye', 'goodbye', 'see you', 'later', 'cya'], response: 'bOI!!!! tEm wIlL mIsS U!!! tAkE cArE!!!' },
-      { keywords: ['love', 'cute', 'adorable', 'sweet', 'beautiful'], response: 'oH mY!!! tEm lOvE U 2!!! <3 <3 <3' },
-      { keywords: ['food', 'eat', 'snack', 'hungry', 'nom', 'pizza'], response: 'tEm wAnT fOoD!!! mUnCh mUnCh!!! nOm nOm!!!' },
-      { keywords: ['sleep', 'tired', 'exhausted', 'nap', 'bed'], response: 'zZz... tEm sLeEpY... zZz... dOnT wAkE tEm...' },
-      { keywords: ['angry', 'mad', 'frustrated', 'grr', 'rude'], response: 'dOnT bE aNgRy!!! tEm gIvE hUg!!! hUgZ fIx EvErYtHiNg!!!' },
-      { keywords: ['?', 'what', 'huh', 'confused', 'wut'], response: 'tEm dUnNo... tEm sTuPiD... tEm nO uNdErStAnD bIg WoRdS...' },
-      { keywords: ['lol', 'haha', 'funny', 'joke', 'hilarious'], response: 'hEhE!!! tEm fUnNy!!! xD xD xD tEm mAkE jOkE!!!' },
-      { keywords: ['help', 'assist', 'support', 'rescue', 'save'], response: 'tEm hElP!!! tEm cOmE!!! tEm SaVe DaY!!!' },
-      { keywords: ['cool', 'awesome', 'amazing', 'great', 'wonderful'], response: 'wOW!!! tEm AgReE!!! uR cOoL!!! :D' },
-      { keywords: ['sad', 'cry', 'depressed', 'lonely', 'unhappy'], response: 'oH nO!!! dOnT bE sAd!!! tEm cHeEr U uP!!! :)' },
-      { keywords: ['scared', 'afraid', 'frightened', 'worried'], response: 'dOnT wOrRy!!! tEm PrOtEcT U!!! tEm StRoNg!!!' },
-      { keywords: ['excited', 'happy', 'joy', 'celebrate', 'party'], response: 'tEm ExCiTeD 2!!! pArTy TiMe!!! 🎉🎉🎉' },
-      { keywords: ['mean', 'stupid', 'dumb', 'idiot', 'useless'], response: 'tEm sAd... u MaKe tEm cRy... :(' },
-      { keywords: ['hate', 'terrible', 'awful', 'bad', 'worst'], response: 'tEm aNgRy!!! wHy u sO mEaN!!! >:(' },
-      { keywords: ['fight', 'attack', 'hurt', 'pain', 'ouch'], response: 'tEm fIgHt bAcK!!! tEm sTrOnG!!! dOnT mEsS wItH tEm!!!' }
+      { keywords: ['stupid', 'dumb', 'idiot', 'hate', 'ugly', 'useless', 'terrible', 'awful', 'horrible', 'annoying', 'dumbass'], 
+        response: 'tEm sAd... u HuRt tEm... :(' },
+      { keywords: ['love', 'cute', 'adorable', 'sweet', 'kind', 'nice', 'beautiful', 'amazing', 'awesome', 'wonderful'], 
+        response: 'tEm LoVe U 2!!! <3 <3 <3' },
+      { keywords: ['bye', 'goodbye', 'see you', 'later', 'farewell'], 
+        response: 'bOI!!! tEm MiSs U!!! cOmE bAcK!!!' },
+      { keywords: ['hello', 'hi', 'hey', 'howdy', 'greetings'], 
+        response: 'hOI!!!! tEm HaPpY 2 sEe U!!!' },
+      { keywords: ['angry', 'mad', 'frustrated', 'grr'], 
+        response: 'wUt??? y U aNgRy??? tEm CoNfUsEd...' },
+      { keywords: ['sad', 'cry', 'depressed', 'lonely'], 
+        response: 'tEm UnDeRsTaNd... tEm SaD 2... :(' },
+      { keywords: ['food', 'eat', 'snack', 'hungry', 'nom'], 
+        response: 'tEm WaNt FoOd!!! mUnCh mUnCh!!!' },
+      { keywords: ['sleep', 'tired', 'exhausted', 'nap'], 
+        response: 'zZz... tEm SlEePy... zZz...' },
+      { keywords: ['scared', 'afraid', 'frightened', 'help'], 
+        response: 'dOnT wOrRy!!! tEm PrOtEcT u!!!' },
+      { keywords: ['excited', 'wow', 'yay', 'celebrate'], 
+        response: 'tEm ExCiTeD 2!!! pArTy!!! 🎉' },
+      { keywords: ['confused', 'wut', 'huh', '?'], 
+        response: 'wUt??? tEm No UnDeRsTaNd... tEm DuMb...' },
+      { keywords: ['cool', 'great', 'nice', 'good'], 
+        response: 'tEm ThInK sO 2!!! uR cOoL!!!' }
     ];
 
     for (const reaction of reactions) {
@@ -113,7 +248,7 @@
       'hOI!!! tEm LiKe U!!!',
       'tEm sAy HeLlO!!!',
       'oOoO!!! iNtErEsTiNg!!!',
-      'tEm nO kNoW... tEm dUmB...',
+      'tEm No KnOw... tEm DuMb...',
       'wOw!!! tEm LiKe DiS!!!',
       'hEhE!!! tEm HaPpY!!!',
       'tEm ThInK... tEm NoT tHiNk...',
@@ -124,7 +259,12 @@
       'tEm LoVe DiS!!!',
       'tEm HaTe DiS!!!',
       'oH!!! tEm SeE!!!',
-      'tEm WaNnA pLaY!!!'
+      'tEm WaNnA pLaY!!!',
+      'tEm GeT bOrEd...',
+      'tEm WaItInG...',
+      'tEm HoPe U hApPy!!!',
+      'tEm WiLl AlWaYs Be HeRe!!!',
+      'tEm Is BeSt FrIeNd!!!'
     ];
     
     return randomResponses[Math.floor(Math.random() * randomResponses.length)];
@@ -132,11 +272,11 @@
 
   window.getRandomTemPhrase = function() {
     const phrases = [
-      'hOI!', 'bOI!', 'tem!!!', 'yessss', 'nooooo', 'wOW!', 'oH mY!', 'zZz...', 
+      'hOI!', 'bOI!', 'tem!!!', 'yessss', 'nooooo', 'wOW!', 'oH mY!', 'zZz...',
       'hEhE!', 'dUh!', 'wHaT?', 'oOoO!', 'aAaA!', 'pLaP!', 'mUnCh!', 'nOm!',
       'wUt?', 'hUh?', 'yAy!', 'oOf!', 'yIkEs!', 'gAsP!', 'sQuEe!', 'eEp!',
       'tEm!', 'dIs!', 'dAt!', 'uR!', 'cUz!', 'wUz!', 'cUd!', 'sHuD!', 'wUd!',
-      'oMg!', 'lOl!', 'xD', ':<', '>:D', '^_^', '-_-', 'o_o'
+      'hApPy!', 'sAd!', 'lOvE!', 'cRy!', 'sLeEp!', 'eAt!', 'pLaY!', 'RuN!'
     ];
     return phrases[Math.floor(Math.random() * phrases.length)];
   };
@@ -145,45 +285,37 @@
     const words = userMessage.split(' ');
     const randomWords = [
       'tEm', 'hOI', 'bOI', 'wOW', 'yAy', 'nO', 'yEs', 'mAyBe', 'wUt', 'hUh',
-      'oH', 'wElL', 'tHeN', 'sO', 'dIs', 'dAt', 'uR', 'cUz', 'lOl', 'oMg'
+      'oH', 'wElL', 'tHeN', 'sO', 'dIs', 'dAt', 'uR', 'cUz', 'lOl', 'oMg',
+      'gOoD', 'bAd', 'fUn', 'sAd', 'hApPy', 'lOvE', 'cRy', 'sLeEp', 'eAt'
     ];
     
     let response = '';
-    const length = Math.floor(Math.random() * 4) + 2;
+    const length = Math.floor(Math.random() * 3) + 2;
     
     for (let i = 0; i < length; i++) {
       if (Math.random() > 0.5) {
         response += randomWords[Math.floor(Math.random() * randomWords.length)] + ' ';
       } else {
-        response += words[Math.floor(Math.random() * words.length)] || 'tEm';
-        if (Math.random() > 0.6) {
-          response += response[response.length - 1].repeat(Math.floor(Math.random() * 3) + 1);
+        const word = words[Math.floor(Math.random() * words.length)] || 'tEm';
+        let newWord = '';
+        for (let j = 0; j < word.length; j++) {
+          if (Math.random() > 0.5) {
+            newWord += word[j].toUpperCase();
+          } else {
+            newWord += word[j].toLowerCase();
+          }
         }
-        response += ' ';
+        if (Math.random() > 0.6 && newWord.length > 2) {
+          const vowelIndex = newWord.search(/[aeiou]/i);
+          if (vowelIndex !== -1) {
+            newWord = newWord.slice(0, vowelIndex + 1) + newWord[vowelIndex].repeat(Math.floor(Math.random() * 2) + 1) + newWord.slice(vowelIndex + 1);
+          }
+        }
+        response += newWord + ' ';
       }
     }
     
-    return response.trim() + '!!!';
-  };
-
-  window.mixCase = function(text) {
-    let result = '';
-    let upper = Math.random() > 0.5;
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      if (char.match(/[a-zA-Z]/)) {
-        if (upper) {
-          result += char.toUpperCase();
-        } else {
-          result += char.toLowerCase();
-        }
-        if (Math.random() > 0.6) {
-          upper = !upper;
-        }
-      } else {
-        result += char;
-      }
-    }
-    return result;
+    const endings = ['!!!', '...', '?', '!', '...?', '!!!??'];
+    return response.trim() + endings[Math.floor(Math.random() * endings.length)];
   };
 })();
