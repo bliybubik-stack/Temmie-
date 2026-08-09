@@ -14,17 +14,11 @@
 <body>
   <div class="w-full max-w-md phone-glass p-6 relative overflow-hidden" id="phoneContainer">
     <div class="flex justify-between items-center text-gray-400 text-sm font-semibold mb-4">
-      <span class="tracking-wide">tEmMM</span>
-      <div class="flex space-x-1.5 items-center">
-        <div class="w-4 h-4 border border-gray-500 rounded-full flex items-center justify-center">
-          <span class="block w-2 h-2 bg-gray-400 rounded-full"></span>
-        </div>
-        <span class="text-[10px] tracking-widest opacity-70">●●●●●</span>
-      </div>
+      <span class="tracking-wide">tEm tAlK</span>
     </div>
 
     <div class="flex justify-between items-end mb-4">
-  <h1 class="text-2xl font-bold text-white tracking-tight">tEm tAlK</h1>
+      <h1 class="text-2xl font-bold text-white tracking-tight">Temmie</h1>
     </div>
 
     <div class="glass-deep p-4 mb-4 flex items-center gap-3">
@@ -32,17 +26,14 @@
         <img id="moodImage" src="images/happy.png" alt="Temmie mood" class="w-full h-full object-contain grayscale" />
       </div>
       <div class="flex-1">
-        <p class="text-white text-sm font-medium">tEm mOOd!!!</p>
+        <p class="text-white text-sm font-medium">TeMm MoOD!!!</p>
         <p id="statusText" class="text-gray-400 text-xs">tEm iS rEaDy...</p>
-      </div>
-      <div class="w-8 h-8 glass flex items-center justify-center no-tilt">
-        <i class="fas fa-circle text-[6px] text-gray-500"></i>
       </div>
     </div>
 
     <div class="glass p-3 mb-4 flex items-center gap-2">
       <i class="fas fa-key text-gray-500 text-xs"></i>
-      <input type="password" id="apiKeyInput" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" />
+      <input type="password" id="apiKeyInput" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" />
       <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
     </div>
 
@@ -51,7 +42,7 @@
     </div>
 
     <div class="glass p-2 flex items-center gap-2">
-      <input type="text" id="userInput" placeholder="tYpE hOI..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 px-2" autofocus />
+      <input type="text" id="userInput" placeholder="tYpE hOI..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500 px-2" autofocus autocomplete="off" />
       <button id="sendBtn" class="glass w-10 h-10 flex items-center justify-center text-gray-300 hover:text-white transition">
         <i class="fas fa-arrow-right"></i>
       </button>
