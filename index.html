@@ -34,6 +34,12 @@
     <div id="apiKeyContainer" class="glass p-3 mb-4 flex items-center gap-2">
       <i class="fas fa-key text-gray-500 text-xs"></i>
       <input id="apiKeyInput" type="text" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" data-lpignore="true" />
+      <button id="toggleVisibilityBtn" class="glass w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition text-xs" title="Toggle visibility">
+        <i class="fas fa-eye"></i>
+      </button>
+      <button id="editKeyBtn" class="glass w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition text-xs" title="Edit key">
+        <i class="fas fa-pen"></i>
+      </button>
       <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
     </div>
 
@@ -53,38 +59,86 @@
     document.addEventListener('DOMContentLoaded', function() {
       const apiInput = document.getElementById('apiKeyInput');
       const saveBtn = document.getElementById('saveKeyBtn');
+      const editBtn = document.getElementById('editKeyBtn');
+      const toggleBtn = document.getElementById('toggleVisibilityBtn');
       const apiContainer = document.getElementById('apiKeyContainer');
       
+      let isVisible = false;
+      let isLocked = false;
+
       const savedKey = localStorage.getItem('temmie_key');
       if (savedKey) {
         apiInput.value = savedKey;
-        apiInput.type = 'text';
+        apiInput.type = 'password';
+        isVisible = false;
+        isLocked = true;
         apiInput.disabled = true;
         apiInput.classList.add('opacity-50', 'cursor-not-allowed');
-        saveBtn.textContent = '✓ Saved';
+        saveBtn.textContent = 'Saved';
         saveBtn.style.opacity = '0.5';
         saveBtn.style.pointerEvents = 'none';
+        toggleBtn.style.display = 'flex';
+        editBtn.style.display = 'flex';
+        toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+      } else {
+        toggleBtn.style.display = 'none';
+        editBtn.style.display = 'none';
       }
+
+      toggleBtn.addEventListener('click', function() {
+        if (!isLocked) return;
+        if (isVisible) {
+          apiInput.type = 'password';
+          isVisible = false;
+          toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+        } else {
+          apiInput.type = 'text';
+          isVisible = true;
+          toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        }
+      });
+
+      editBtn.addEventListener('click', function() {
+        if (!isLocked) return;
+        isLocked = false;
+        apiInput.disabled = false;
+        apiInput.classList.remove('opacity-50', 'cursor-not-allowed');
+        apiInput.type = 'text';
+        isVisible = true;
+        toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        saveBtn.textContent = 'Save';
+        saveBtn.style.opacity = '1';
+        saveBtn.style.pointerEvents = 'auto';
+        editBtn.style.display = 'none';
+        toggleBtn.style.display = 'none';
+        apiInput.focus();
+        apiInput.select();
+      });
 
       saveBtn.addEventListener('click', function() {
         const key = apiInput.value.trim();
         if (key) {
           localStorage.setItem('temmie_key', key);
-          apiInput.type = 'text';
+          isLocked = true;
+          apiInput.type = 'password';
+          isVisible = false;
           apiInput.disabled = true;
           apiInput.classList.add('opacity-50', 'cursor-not-allowed');
-          saveBtn.textContent = '✓ Saved';
+          saveBtn.textContent = 'Saved';
           saveBtn.style.opacity = '0.5';
           saveBtn.style.pointerEvents = 'none';
+          toggleBtn.style.display = 'flex';
+          editBtn.style.display = 'flex';
+          toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
           
           const statusText = document.getElementById('statusText');
-          statusText.textContent = '✅ kEy sAvEd!';
+          statusText.textContent = 'Key saved';
           setTimeout(() => {
-            statusText.textContent = '⚫ tEm rEaDy ~';
+            statusText.textContent = 'tEm iS rEaDy...';
           }, 1600);
         } else {
           const statusText = document.getElementById('statusText');
-          statusText.textContent = '⚠️ eMpTy kEy...';
+          statusText.textContent = 'Empty key';
         }
       });
 
