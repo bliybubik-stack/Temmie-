@@ -21,19 +21,28 @@
       <h1 class="text-2xl font-bold text-white tracking-tight">Temmie</h1>
     </div>
 
-    <div class="glass-deep p-4 mb-4 flex items-center gap-3">
-      <div class="relative w-14 h-14 status-frame flex-shrink-0">
-        <img id="moodImage" src="images/happy.png" alt="Temmie mood" class="w-full h-full object-contain grayscale" />
-      </div>
-      <div class="flex-1">
-        <p class="text-white text-sm font-medium">TeMm MoOD!!!</p>
-        <p id="statusText" class="text-gray-400 text-xs">tEm iS rEaDy...</p>
+    <!-- API Tutorial Card -->
+    <div class="glass-deep p-4 mb-3" id="tutorialCard">
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 glass flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i class="fas fa-graduation-cap text-gray-400 text-xs"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-white text-xs font-medium mb-1">How to get OpenRouter API key:</p>
+          <ol class="text-gray-400 text-[10px] leading-relaxed space-y-1">
+            <li>1. Go to <a href="https://openrouter.ai" target="_blank" class="text-gray-300 hover:text-white underline transition" id="openrouterLink">openrouter.ai</a> and click "Get API key"</li>
+            <li>2. Sign up / Log in (Google recommended)</li>
+            <li>3. Click "+ New Key" and name it</li>
+            <li>4. Click "Create" and copy the key (starts with sk-...)</li>
+          </ol>
+          <p class="text-gray-500 text-[9px] mt-1.5">~ Paste your key in the field below ~</p>
+        </div>
       </div>
     </div>
 
-    <div id="apiKeyContainer" class="glass p-3 mb-4 flex items-center gap-2">
+    <div id="apiKeyContainer" class="glass p-3 mb-3 flex items-center gap-2">
       <i class="fas fa-key text-gray-500 text-xs"></i>
-      <input id="apiKeyInput" type="text" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" data-lpignore="true" />
+      <input id="apiKeyInput" type="text" placeholder="sk-..." class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" data-lpignore="true" />
       <button id="toggleVisibilityBtn" class="glass w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition text-xs" title="Toggle visibility">
         <i class="fas fa-eye"></i>
       </button>
@@ -41,6 +50,11 @@
         <i class="fas fa-pen"></i>
       </button>
       <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
+    </div>
+
+    <div id="walkToggleContainer" class="glass p-2 mb-3 flex items-center justify-between">
+      <span class="text-white text-sm font-medium">TeMm WaLK ARoUNd!??</span>
+      <button id="walkToggle" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition" data-active="false">OFF</button>
     </div>
 
     <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper">
@@ -61,7 +75,6 @@
       const saveBtn = document.getElementById('saveKeyBtn');
       const editBtn = document.getElementById('editKeyBtn');
       const toggleBtn = document.getElementById('toggleVisibilityBtn');
-      const apiContainer = document.getElementById('apiKeyContainer');
       
       let isVisible = false;
       let isLocked = false;
@@ -84,6 +97,11 @@
         toggleBtn.style.display = 'none';
         editBtn.style.display = 'none';
       }
+
+      document.getElementById('openrouterLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open('https://openrouter.ai', '_blank');
+      });
 
       toggleBtn.addEventListener('click', function() {
         if (!isLocked) return;
@@ -164,6 +182,20 @@
           -webkit-text-fill-color: #f0f0f0 !important;
           transition: background-color 5000s ease-in-out 0s !important;
         }
+        
+        #temmieSprite {
+          transition: none !important;
+        }
+        #temmieSprite img {
+          filter: grayscale(1);
+        }
+        #walkToggle {
+          min-width: 60px;
+        }
+        #walkToggle[data-active="true"] {
+          border-color: rgba(74, 222, 128, 0.3);
+          background: rgba(74, 222, 128, 0.05);
+        }
       `;
       document.head.appendChild(style);
     });
@@ -171,6 +203,7 @@
 
   <script src="prompt.js"></script>
   <script src="behavior.js"></script>
+  <script src="temmie-walk.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
