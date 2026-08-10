@@ -29,6 +29,10 @@
         <p class="text-white text-sm font-medium">TeMm MoOD!!!</p>
         <p id="statusText" class="text-gray-400 text-xs">tEm iS rEaDy...</p>
       </div>
+      <button id="walkToggle" class="glass px-3 py-1.5 text-xs text-gray-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fas fa-person-walking"></i>
+        <span id="walkLabel">Off</span>
+      </button>
     </div>
 
     <div id="apiKeyContainer" class="glass p-3 mb-4 flex items-center gap-2">
@@ -43,8 +47,9 @@
       <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
     </div>
 
-    <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper">
-      <div id="chatContainer" class="flex flex-col gap-3"></div>
+    <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper relative" id="chatWrapper">
+      <canvas id="temCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-none" style="z-index: 10;"></canvas>
+      <div id="chatContainer" class="flex flex-col gap-3 relative" style="z-index: 5;"></div>
     </div>
 
     <div class="glass p-2 flex items-center gap-2">
@@ -61,7 +66,6 @@
       const saveBtn = document.getElementById('saveKeyBtn');
       const editBtn = document.getElementById('editKeyBtn');
       const toggleBtn = document.getElementById('toggleVisibilityBtn');
-      const apiContainer = document.getElementById('apiKeyContainer');
       
       let isVisible = false;
       let isLocked = false;
@@ -172,5 +176,6 @@
   <script src="prompt.js"></script>
   <script src="behavior.js"></script>
   <script src="app.js"></script>
+  <script src="walk.js"></script>
 </body>
 </html>
