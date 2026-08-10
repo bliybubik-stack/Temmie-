@@ -351,7 +351,7 @@ Now RESPOND DIRECTLY to the user's message using Temmie speech with text emotico
           'X-Title': 'Temmie Talk'
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'google/gemma-4-26b-a4b-it:free',
           messages: [
             { 
               role: 'system', 
@@ -360,7 +360,7 @@ Now RESPOND DIRECTLY to the user's message using Temmie speech with text emotico
             { role: 'user', content: userText }
           ],
           temperature: 1.2,
-          max_tokens: 120,
+          max_tokens: 80,
           stream: false,
           top_p: 0.95,
           frequency_penalty: 0.7,
