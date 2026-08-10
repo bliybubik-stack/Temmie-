@@ -29,13 +29,9 @@
         <p class="text-white text-sm font-medium">TeMm MoOD!!!</p>
         <p id="statusText" class="text-gray-400 text-xs">tEm iS rEaDy...</p>
       </div>
-      <button id="walkToggle" class="glass px-3 py-1.5 text-xs text-gray-300 hover:text-white transition flex items-center gap-1.5">
-        <i class="fas fa-person-walking"></i>
-        <span id="walkLabel">Off</span>
-      </button>
     </div>
 
-    <div id="apiKeyContainer" class="glass p-3 mb-4 flex items-center gap-2">
+    <div id="apiKeyContainer" class="glass p-3 mb-3 flex items-center gap-2">
       <i class="fas fa-key text-gray-500 text-xs"></i>
       <input id="apiKeyInput" type="text" placeholder="OpenRouter key" class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder-gray-500" autocomplete="off" data-lpignore="true" />
       <button id="toggleVisibilityBtn" class="glass w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition text-xs" title="Toggle visibility">
@@ -47,9 +43,13 @@
       <button id="saveKeyBtn" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition">Save</button>
     </div>
 
-    <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper relative" id="chatWrapper">
-      <canvas id="temCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-none" style="z-index: 10;"></canvas>
-      <div id="chatContainer" class="flex flex-col gap-3 relative" style="z-index: 5;"></div>
+    <div id="walkToggleContainer" class="glass p-2 mb-3 flex items-center justify-between">
+      <span class="text-white text-sm font-medium">TeMm WaLK ARoUNd!??</span>
+      <button id="walkToggle" class="glass px-4 py-1.5 text-xs text-gray-300 hover:text-white transition" data-active="false">OFF</button>
+    </div>
+
+    <div class="glass-deep p-4 mb-4 flex-1 chat-wrapper">
+      <div id="chatContainer" class="flex flex-col gap-3"></div>
     </div>
 
     <div class="glass p-2 flex items-center gap-2">
@@ -168,6 +168,20 @@
           -webkit-text-fill-color: #f0f0f0 !important;
           transition: background-color 5000s ease-in-out 0s !important;
         }
+        
+        #temmieSprite {
+          transition: none !important;
+        }
+        #temmieSprite img {
+          filter: grayscale(1);
+        }
+        #walkToggle {
+          min-width: 60px;
+        }
+        #walkToggle[data-active="true"] {
+          border-color: rgba(74, 222, 128, 0.3);
+          background: rgba(74, 222, 128, 0.05);
+        }
       `;
       document.head.appendChild(style);
     });
@@ -175,7 +189,7 @@
 
   <script src="prompt.js"></script>
   <script src="behavior.js"></script>
+  <script src="temmie-walk.js"></script>
   <script src="app.js"></script>
-  <script src="walk.js"></script>
 </body>
 </html>
